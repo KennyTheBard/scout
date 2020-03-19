@@ -1,0 +1,41 @@
+{
+  "name": "scout-api",
+  "version": "0.0.1",
+  "description": "Back-end of web app for bug-tracking",
+  "main": "start.js",
+  "scripts": {
+    "start-prod": "node start.js",
+    "start": "nodemon -r dotenv/config start.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/KennyTheBard/scout.git"
+  },
+  "keywords": [
+    "bug-tracking"
+  ],
+  "author": "Octavian Teculescu",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/KennyTheBard/scout/issues"
+  },
+  "homepage": "https://github.com/KennyTheBard/scout#readme",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "express-async-errors": "^3.1.1",
+    "helmet": "^3.21.3",
+    "jsonwebtoken": "^8.5.1",
+    "mongodb": "^3.5.4",
+    "mongoose": "^5.9.3",
+    "morgan": "^1.9.1",
+    "pg": "^7.18.2",
+    "validator": "^12.2.0",
+    "winston": "^3.2.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.2"
+  }
+}
