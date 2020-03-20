@@ -13,9 +13,14 @@ const validateFields = (fields) => {
     for (let fieldName in fields) {
         const fieldValue = fields[fieldName].value + ''; // validator functioneaza doar pe strings
         const fieldType = fields[fieldName].type;
+        const fieldLength = fields[fieldName].length;
 
         if (!fieldValue) {
-            throw new ServerError(`Lipseste campul ${fieldName}`, 400);
+            if (!!optional) {
+                throw new ServerError(`Lipseste campul ${fieldName}`, 400);
+            } else {
+                return;
+            }
         }
     
         switch (fieldType) {
@@ -40,6 +45,11 @@ const validateFields = (fields) => {
                 }
                 break;
         }
+
+        if (fieldValue.length != fieldLength) {
+            throw new ServerError(`Campul ${fieldName} trebuie sa aiba lungimea ${fieldLength}`, 400);
+        }
+
     }
    
 }
