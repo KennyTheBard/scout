@@ -15,19 +15,8 @@ const options = {
 };
 
 const generateToken = async (payload) => {
-    // to be done
-    // HINT: folositi functia "sign" din biblioteca jsonwebtoken
-    // HINT2: seamana cu functia verify folosita mai jos ;)
-    /*
-     payload trebuie sa fie de forma:
-     {
-         userId: ,
-         userRole: 
-     }
-    */
-
     try {
-        const signed = await jwt.sign(payload, process.env.JWT_SECRET_KEY, options);
+        const signed = jwt.sign(payload, process.env.JWT_SECRET_KEY, options);
         return signed;
     } catch (err) {
         console.trace(err);
@@ -37,7 +26,7 @@ const generateToken = async (payload) => {
 
 const verifyAndDecodeData = async (token) => {
     try {
-        const decoded = await jwt.verify(token, process.env.JWT_SECRET_KEY, options);
+        const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY, options);
         return decoded;
     } catch (err) {
         console.trace(err);
@@ -60,20 +49,6 @@ const authorizeAndExtractToken = async (req, res, next) => {
         });
 
         const decoded = await verifyAndDecodeData(token);
-        /*
-         Decoded este obiectul care a fost trimis pentru criptare in functia "generateToken"
-         are forma:
-         {
-            userId: ,
-            userRole: 
-         }
-        */
-
-        /* 
-        pentru a putea folosi informatia in middleware-ul urmator retin informatia decodata in campul "state" al obiectului "req" 
-        obiectul "req" va fi transmis implicit la urmatorul middleware
-        */
-
         req.state = {
             decoded
         };
@@ -87,7 +62,7 @@ const authorizeAndExtractToken = async (req, res, next) => {
 const authorizeAdminOnly = async (req, res, next) => {
     console.log(req.state, !!req.state.decoded);
     if (!!req.state.decoded) {
-        if (req.state.decoded.userRole !== "admin") {
+        if (req.state.decoded.userRole.toUpperCase !== "admin") {
             next(new ServerError('Resursa accesibila doar pentru admini!', 401));
         }
         next();

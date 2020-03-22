@@ -1,12 +1,12 @@
 CREATE TABLE "users" (
   "id" SERIAL PRIMARY KEY,
-  "username" varchar
+  "username" varchar,
   "password" varchar
 );
 
 CREATE TABLE "roles" (
   "id" SERIAL PRIMARY KEY,
-  "name" varchar,
+  "name" varchar
 --   "project_id" int
 );
 
@@ -29,7 +29,7 @@ CREATE TABLE "roles_to_users" (
 
 CREATE TABLE "projects" (
   "id" SERIAL PRIMARY KEY,
-  "name" varchar,
+  "name" varchar
 --   "code" varchar[4]
 );
 
@@ -55,3 +55,6 @@ ALTER TABLE "tasks" ADD FOREIGN KEY ("project_id") REFERENCES "projects" ("id");
 
 -- for task codes
 -- https://stackoverflow.com/questions/6821871/postgresql-sequence-based-on-another-column
+
+INSERT INTO roles(name) VALUES('admin');
+INSERT INTO roles(name) VALUES('user');

@@ -15,38 +15,41 @@ const {
     compare
 } = require('../../security/Password');
 
-const register = async (username, password, role_id) => {
-    // pas 1: cripteaza parola
+const register = async (username, password) => {
     let cryptoPass = await hash(password);
 
-    // pas 2: adauga (username, parola cripttata, role_id) in baza de date
-    await query('INSERT INTO users (username, password, role_id) VALUES ($1, $2, $3)', [username, cryptoPass, role_id]);
+    const rows = await query('INSERT INTO users (username, password) VALUES ($1, $2) RETURNING *', [username, cryptoPass]);
+    await query('INSERT INTO roles_to_users (user_id, role_id) VALUES ($1, $2)', [rows[0].id, 2]);
 };
 
 const authenticate = async (username, password) => {
-    const result = await query(`SELECT u.id, u.password, r.value as role FROM users u 
-                                JOIN roles r ON r.id = u.role_id
+    const users = await query(`SELECT u.id, u.password FROM users u
                                 WHERE u.username = $1`, [username]);
-    if (result.length === 0) {
+    if (users.length === 0) {
         throw new ServerError(`Utilizatorul cu username ${username} nu exista in sistem!`, 400);
     }
-    const user = result[0];
+    const user = users[0];
 
-    // pas 1: verifica daca parola este buna (hint: functia compare)
-    // pas 1.1.: compare returneaza true sau false. Daca parola nu e buna, arunca eroare
+    // check registration dates
     const check = await compare(password, user.password);
     console.log(user, check, password, user.password)
     if (!check) {
         throw new ServerError("Parola incorecta!", 403);
     }
 
-    // pas 2: genereaza token cu payload-ul: {userId si userRole}
+    const roles = await query(`SELECT r.name FROM users u 
+                                JOIN roles_to_users r2u ON r2u.user_id = u.id
+                                JOIN roles r ON r2u.role_id = r.id
+                                WHERE u.username = $1`, [username]);
+
+    // generate token payload
     let token = await generateToken({
         userId: user.id,
-        userRole: user.role
+        userRoles: roles.map(function(role){
+            return role.name;
+        })
     })
 
-    // pas 3: returneaza token
     return token
 };
 

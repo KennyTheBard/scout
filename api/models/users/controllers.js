@@ -10,8 +10,7 @@ const router = express.Router();
 router.post('/register', async (req, res, next) => {
     const {
         username,
-        password,
-        role_id
+        password
     } = req.body;
 
     // validare de campuri
@@ -24,16 +23,12 @@ router.post('/register', async (req, res, next) => {
             password: {
                 value: password,
                 type: 'ascii'
-            },
-            role_id: {
-                value: role_id,
-                type:'int'
             }
         };
 
         validateFields(fieldsToBeValidated);
 
-        await UsersService.register(username, password, role_id);
+        await UsersService.register(username, password);
 
         res.status(201).end();
     } catch (err) {
@@ -71,4 +66,5 @@ router.post('/login', async (req, res, next) => {
     }
 
 })
+
 module.exports = router;

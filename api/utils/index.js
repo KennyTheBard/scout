@@ -46,7 +46,7 @@ const validateFields = (fields) => {
                 break;
         }
 
-        if (fieldValue.length != fieldLength) {
+        if (!!fieldLength && fieldValue.length != fieldLength) {
             throw new ServerError(`Campul ${fieldName} trebuie sa aiba lungimea ${fieldLength}`, 400);
         }
 
