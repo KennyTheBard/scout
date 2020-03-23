@@ -1,4 +1,4 @@
-const bcryptjs = require('bcryptjs');
+const bcryptjs = require('./node_modules/bcryptjs');
 
 // va trebui sa folositi hash atunci cand stocati parola in baza de date, la register
 const hash = async (plainTextPassword) => {

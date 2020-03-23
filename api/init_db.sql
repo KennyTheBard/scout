@@ -1,60 +1,62 @@
 CREATE TABLE "users" (
   "id" SERIAL PRIMARY KEY,
-  "username" varchar,
-  "password" varchar
+  "username" varchar UNIQUE NOT NULL,
+  "password" varchar NOT NULL
 );
 
-CREATE TABLE "roles" (
+CREATE TABLE "permissions" (
   "id" SERIAL PRIMARY KEY,
-  "name" varchar
---   "project_id" int
+  "name" varchar UNIQUE NOT NULL
 );
 
-CREATE TABLE "roles_to_users" (
+CREATE TABLE "permissions_to_users" (
+  "permission_id" int,
   "user_id" int,
-  "role_id" int,
-  PRIMARY KEY ("user_id", "role_id")
+  "project_id" int,
+  PRIMARY KEY ("permission_id", "user_id", "project_id")
 );
-
--- CREATE TABLE "permissions" (
---   "id" SERIAL PRIMARY KEY,
---   "name" varchar
--- );
-
--- CREATE TABLE "permissions_to_roles" (
---   "permission_id" int,
---   "role_id" int,
---   PRIMARY KEY ("permission_id", "role_id")
--- );
 
 CREATE TABLE "projects" (
   "id" SERIAL PRIMARY KEY,
-  "name" varchar
---   "code" varchar[4]
+  "name" varchar UNIQUE NOT NULL,
+  "code" varchar[4]
+);
+
+CREATE TABLE "statuses" (
+  "id" SERIAL PRIMARY KEY,
+  "name" varchar UNIQUE NOT NULL,
+  "project_id" int,
 );
 
 CREATE TABLE "tasks" (
   "id" SERIAL PRIMARY KEY,
---   "numeric_code" varchar UNIQUE NOT NULL,
   "project_id" int,
+  "code" int NOT NULL,
   "description" varchar,
-  "status" varchar
+  "status_id" int
 );
 
--- ALTER TABLE "roles" ADD FOREIGN KEY ("project_id") REFERENCES "projects" ("id");
+ALTER TABLE "permissions_to_users" ADD FOREIGN KEY ("permission_id") REFERENCES "permissions" ("id");
 
-ALTER TABLE "roles_to_users" ADD FOREIGN KEY ("user_id") REFERENCES "users" ("id");
+ALTER TABLE "permissions_to_users" ADD FOREIGN KEY ("user_id") REFERENCES "users" ("id");
 
-ALTER TABLE "roles_to_users" ADD FOREIGN KEY ("role_id") REFERENCES "roles" ("id");
-
--- ALTER TABLE "permissions_to_roles" ADD FOREIGN KEY ("permission_id") REFERENCES "permissions" ("id");
-
--- ALTER TABLE "permissions_to_roles" ADD FOREIGN KEY ("role_id") REFERENCES "roles" ("id");
+ALTER TABLE "permissions_to_users" ADD FOREIGN KEY ("project_id") REFERENCES "projects" ("id");
 
 ALTER TABLE "tasks" ADD FOREIGN KEY ("project_id") REFERENCES "projects" ("id");
 
--- for task codes
--- https://stackoverflow.com/questions/6821871/postgresql-sequence-based-on-another-column
+ALTER TABLE "statuses" ADD FOREIGN KEY ("project_id") REFERENCES "projects" ("id");
 
-INSERT INTO roles(name) VALUES('admin');
-INSERT INTO roles(name) VALUES('user');
+ALTER TABLE "tasks" ADD FOREIGN KEY ("status_id") REFERENCES "statuses" ("id");
+
+INSERT INTO permissions(id, name) VALUES
+(1, "CREATE_PROJECT"),
+(2, "DELETE_PROJECT"),
+(3, "UPDATE_PROJECT_NAME"),
+(4, "UPDATE_PROJECT_CODE"),
+(5, "CREATE_TASK"),
+(6, "DELETE_TASK"),
+(7, "UPDATE_TASK_DESCRIPTION"),
+(8, "UPDATE_TASK_STATUS"),
+(9, "CREATE_STATUS"),
+(10, "DELETE_STATUS"),
+(11, "UPDATE_STATUS_NAME");

@@ -4,7 +4,7 @@ const {
 
 const {
     generateToken,
-} = require('../../security/Jwt');
+} = require('../../security/jwt');
 
 const {
     ServerError
@@ -13,7 +13,7 @@ const {
 const {
     hash,
     compare
-} = require('../../security/Password');
+} = require('../../security/password');
 
 const register = async (username, password) => {
     let cryptoPass = await hash(password);
