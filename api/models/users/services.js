@@ -37,17 +37,10 @@ const authenticate = async (username, password) => {
         throw new ServerError("Parola incorecta!", 403);
     }
 
-    const roles = await query(`SELECT r.name FROM users u 
-                                JOIN roles_to_users r2u ON r2u.user_id = u.id
-                                JOIN roles r ON r2u.role_id = r.id
-                                WHERE u.username = $1`, [username]);
-
     // generate token payload
     let token = await generateToken({
         userId: user.id,
-        userRoles: roles.map(function(role){
-            return role.name;
-        })
+        username: username,
     })
 
     return token

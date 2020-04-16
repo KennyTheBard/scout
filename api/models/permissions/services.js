@@ -2,21 +2,17 @@ const {
     query
 } = require('../../data');
 
-const add = async (name) => {
-    await query('INSERT INTO permissions (name) VALUES ($1)', [value]);
+const givePermissionToUserOnProject = async (permission, userId, projectId) => {
+    await query('INSERT INTO permissions_to_users (permission, user_id, project_id) ' +
+        'VALUES ($1, $2, $3)', [permission, userId, projectId]);
 };
 
-const getById = async (id) => {
-    return await query('SELECT * FROM permissions WHERE id = $1', [id]);
-};
-
-
-const getAll = async() => {
-    return await query('SELECT * FROM permissions');
+const getPermissionsForUserOnProject = async (userId, projectId) => {
+    return await query('SELECT * FROM permissions_to_users WHERE ' +
+        'user_id = $1 AND project_id = $2', [userId, projectId]);
 };
 
 module.exports = {
-    add,
-    getById,
-    getAll
+    givePermissionToUserOnProject,
+    getPermissionsForUserOnProject,
 }

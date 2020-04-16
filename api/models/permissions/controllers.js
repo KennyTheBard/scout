@@ -1,29 +1,62 @@
 const express = require('express');
 
 const PermissionsService = require('./services.js');
-const Security = require('../../security/Jwt/index.js');
+const {
+    authorizePermissions
+} = require('../../security/authorize/index.js');
+const {
+    permissions
+} = require('./permissions.js');
+
 
 const {
     validateFields
 } = require('../../utils');
 
+const {
+    isValidPermission
+} = require('./permissions.js');
+
 const router = express.Router();
 
-router.post('/permissions', Security.authorizeAdminOnly, async (req, res, next) => {
+router.post('/:userId/:projectId',
+            authorizePermissions(
+                permissions.GRANT_VIEW_PROJECT,
+                permissions.GRANT_UPDATE_PROJECT_NAME,
+                permissions.GRANT_UPDATE_PROJECT_CODE,
+                permissions.GRANT_DELETE_PROJECT,
+                permissions.GRANT_CREATE_TASK,
+                permissions.GRANT_VIEW_TASK,
+                permissions.GRANT_DELETE_TASK,
+                permissions.GRANT_UPDATE_TASK_DESCRIPTION,
+                permissions.GRANT_UPDATE_TASK_STATUS,
+            ),
+            async (req, res, next) => {
     const {
-        name
+        userId,
+        projectId
+    } = req.params;
+    const {
+        permission
     } = req.body;
 
     try {
         validateFields({
-            name: {
-                name,
-                type: 'alpha'
+            userId: {
+                value: userId,
+                type: 'int'
+            },
+            projectId: {
+                value: projectId,
+                type: 'int'
             }
         });
 
-        await PermissionsService.add(name);
+        isValidPermission(permission);
 
+        await PermissionsService.givePermissionToUserOnProject(
+            permission, parseInt(userId), parseInt(projectId)
+        );
         res.status(201).end();
     } catch (err) {
         next(err);
@@ -31,27 +64,31 @@ router.post('/permissions', Security.authorizeAdminOnly, async (req, res, next) 
     
 });
 
-router.get('/:id', async (req, res, next) => {
+router.get('/:userId/:projectId', async (req, res, next) => {
     const {
-        id
+        userId,
+        projectId
     } = req.params;
 
     try {
         validateFields({
-            id: {
-                value: id,
+            userId: {
+                value: userId,
+                type: 'int'
+            },
+            projectId: {
+                value: projectId,
                 type: 'int'
             }
         });
-        const perm = await permissions.getById(parseInt(id));
+
+        const perm = await PermissionsService.getPermissionsForUserOnProject(
+            parseInt(userId), parseInt(projectId)
+        );
         res.json(perm);
     } catch (err) {
         next(err);
     }
-});
-
-router.get('/permissions', async (req, res, next) => {
-    res.json(await permissions.getAll());
 });
 
 module.exports = router;

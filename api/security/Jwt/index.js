@@ -1,4 +1,4 @@
-const jwt = require('./node_modules/jsonwebtoken');
+const jwt = require('jsonwebtoken');
 
 const {
     ServerError
@@ -59,20 +59,7 @@ const authorizeAndExtractToken = async (req, res, next) => {
     }
 };
 
-const authorizeAdminOnly = async (req, res, next) => {
-    console.log(req.state, !!req.state.decoded);
-    if (!!req.state.decoded) {
-        if (req.state.decoded.userRole.toUpperCase !== "admin") {
-            next(new ServerError('Resursa accesibila doar pentru admini!', 401));
-        }
-        next();
-    } else {
-        next(new ServerError('Decodarea tokenului nu a fost realizata!', 500));
-    }
-};
-
 module.exports = {
     generateToken,
     authorizeAndExtractToken,
-    authorizeAdminOnly
 };

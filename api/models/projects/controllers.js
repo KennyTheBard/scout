@@ -3,12 +3,19 @@ const express = require('express');
 const Security = require('../../security/Jwt/index.js');
 const ProjectsService = require('./services.js');
 const {
+    authorizePermissions
+} = require('../../security/authorize/index.js');
+const {
+    permissions
+} = require('../permissions/permissions.js');
+
+const {
     validateFields
 } = require('../../utils');
 
 const router = express.Router();
 
-router.post('/', Security.authorizeAdminOnly, async (req, res, next) => {
+router.post('/', async (req, res, next) => {
     const {
         name
     } = req.body;
@@ -39,28 +46,33 @@ router.get('/', async (req, res, next) => {
     }
 });
 
-router.get('/:id', async (req, res, next) => {
+router.get('/:projectId', authorizePermissions(permissions.VIEW_PROJECT), async (req, res, next) => {
     const {
-        id
+        projectId
     } = req.params;
 
     try {
         validateFields({
-            id: {
-                value: id,
+            projectId: {
+                value: projectId,
                 type: 'int'
             }
         });
-        const project = await ProjectsService.getById(parseInt(id));
+        const project = await ProjectsService.getById(parseInt(projectId));
         res.json(project);
     } catch (err) {
         next(err);
     }
 });
 
-router.put('/:id', Security.authorizeAdminOnly, async (req, res, next) => {
+router.put('/:projectId',
+            authorizePermissions(
+                permissions.UPDATE_PROJECT_NAME,
+                permissions.UPDATE_PROJECT_CODE,
+            ),
+            async (req, res, next) => {
     const {
-        id
+        projectId
     } = req.params;
     const {
         name
@@ -68,8 +80,8 @@ router.put('/:id', Security.authorizeAdminOnly, async (req, res, next) => {
 
     try {
         const fieldsToBeValidated = {
-            id: {
-                value: id,
+            projectId: {
+                value: projectId,
                 type: 'int'
             },
             name: {
@@ -79,27 +91,31 @@ router.put('/:id', Security.authorizeAdminOnly, async (req, res, next) => {
         };
         validateFields(fieldsToBeValidated);
 
-        await ProjectsService.updateById(parseInt(id), name);
+        await ProjectsService.updateById(parseInt(projectId), name);
         res.status(204).end();
     } catch (err) {
         next(err);
     }
 });
 
-router.delete('/:id', Security.authorizeAdminOnly, async (req, res, next) => {
+router.delete('/:projectId',
+                authorizePermissions(
+                    permissions.DELETE_PROJECT,
+                ),
+                async (req, res, next) => {
     const {
-        id
+        projectId
     } = req.params;
 
     try {
         validateFields({
-            id: {
-                value: id,
+            projectId: {
+                value: projectId,
                 type: 'int'
             }
         });
 
-        await ProjectsService.deleteById(parseInt(id));
+        await ProjectsService.deleteById(parseInt(projectId));
         res.status(204).end();
     } catch (err) {
         next(err);
