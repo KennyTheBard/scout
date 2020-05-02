@@ -18,8 +18,7 @@ const {
 const register = async (username, password) => {
     let cryptoPass = await hash(password);
 
-    const rows = await query('INSERT INTO users (username, password) VALUES ($1, $2) RETURNING *', [username, cryptoPass]);
-    await query('INSERT INTO roles_to_users (user_id, role_id) VALUES ($1, $2)', [rows[0].id, 2]);
+    await query('INSERT INTO users (username, password) VALUES ($1, $2) RETURNING *', [username, cryptoPass]);
 };
 
 const authenticate = async (username, password) => {
@@ -32,7 +31,6 @@ const authenticate = async (username, password) => {
 
     // check registration dates
     const check = await compare(password, user.password);
-    console.log(user, check, password, user.password)
     if (!check) {
         throw new ServerError("Parola incorecta!", 403);
     }

@@ -9,23 +9,23 @@ const authorizePermissions = (...permissions) => {
     return async (req, res, next) => {
         const {
             projectId
-        } = req.params;
-        
+        } = req.state;
+    
         if (!!req.state.decoded || !!req.state.decoded.userId) {
             let userPerms = await PermissionsService.getPermissionsForUserOnProject(
                 parseInt(req.state.decoded.userId), parseInt(projectId)
             );
 
             // check for any missing permission
-            for (let perm in permissions) {
-                if (userPerms.indexOf(perm) < 0) {
-                    throw new ServerError('Nu aveti permisiune sa executati aceasta actiune!', 401);
+            for (let perm of permissions) {
+                if (userPerms.filter((userPerm) => perm.is(userPerm['permission'])).length == 0) {
+                    next(new ServerError('Nu aveti permisiune sa executati aceasta actiune!', 401));
                 }
             }
 
         // no jwt or corrupted
         } else {
-            throw new ServerError('Nu aveti permisiune sa executati aceasta actiune!', 401);
+            next(new ServerError('Nu aveti permisiune sa executati aceasta actiune!', 401));
         }
 
         return next();

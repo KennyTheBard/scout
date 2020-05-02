@@ -5,17 +5,14 @@ const {
     authorizePermissions
 } = require('../../security/authorize/index.js');
 const {
-    permissions
+    permissions,
+    isValidPermission
 } = require('./permissions.js');
 
 
 const {
     validateFields
 } = require('../../utils');
-
-const {
-    isValidPermission
-} = require('./permissions.js');
 
 const router = express.Router();
 

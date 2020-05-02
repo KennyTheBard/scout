@@ -2,13 +2,13 @@ const {
     query
 } = require('../../data');
 
-const add = async (code, project_id, description, status) => {
+const add = async (code, projectId, description, status) => {
     await query('INSERT INTO tasks (code, project_id, description, status) ' +
-    'VALUES ($1, $2, $3, $4)', [code, project_id, description, status]);
+    'VALUES ($1, $2, $3, $4)', [code, projectId, description, status]);
 };
 
 const getAllForProject = async (projectId) => {
-    return await query('SELECT * FROM tasks project_id = $2', [projectId]);
+    return await query('SELECT * FROM tasks WHERE project_id = $1', [projectId]);
 };
 
 const getById = async (id, projectId) => {
@@ -24,10 +24,15 @@ const deleteById = async (id, projectId) => {
     await query('DELETE FROM tasks WHERE id = $1 AND project_id = $2', [id, projectId]);
 };
 
+const deleteAllByProjectId = async (projectId) => {
+    await query('DELETE FROM tasks WHERE project_id = $1', [projectId]);
+};
+
 module.exports = {
     add,
     getAllForProject,
     getById,
     updateById,
-    deleteById
+    deleteById,
+    deleteAllByProjectId
 }

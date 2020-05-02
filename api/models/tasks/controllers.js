@@ -9,7 +9,9 @@ const {
 const {
     permissions
 } = require('../permissions/permissions.js');
-
+const {
+    ServerError
+} = require('../../errors/index.js')
 
 const {
     validateFields
@@ -23,7 +25,7 @@ const router = express.Router();
 router.post('/', authorizePermissions(permissions.CREATE_TASK), async (req, res, next) => {
     const {
         projectId
-    } = req.params;
+    } = req.state;
     const {
         code,
         description,
@@ -34,16 +36,11 @@ router.post('/', authorizePermissions(permissions.CREATE_TASK), async (req, res,
         validateFields({
             code: {
                 value: code,
-                type: 'alpha',
-                length: 4
+                type: 'int'
             },
             project_id: {
                 value: projectId,
                 type: 'int'
-            },
-            description: {
-                value: description,
-                type: 'alpha'
             },
             status: {
                 value: status,
@@ -51,9 +48,7 @@ router.post('/', authorizePermissions(permissions.CREATE_TASK), async (req, res,
             },
         });
 
-        if (!isValidStatus(status)) {
-            next(new ServerError('Numele statusului este invalid!', 400));
-        }
+        isValidStatus(status);
 
         await TasksService.add(code, parseInt(projectId), description, status);
         res.status(201).end();
@@ -65,7 +60,7 @@ router.post('/', authorizePermissions(permissions.CREATE_TASK), async (req, res,
 router.get('/', authorizePermissions(permissions.VIEW_PROJECT), async (req, res, next) => {
     const {
         projectId
-    } = req.params;
+    } = req.state;
 
     try {
         validateFields({
@@ -84,9 +79,12 @@ router.get('/', authorizePermissions(permissions.VIEW_PROJECT), async (req, res,
 
 router.get('/:id', authorizePermissions(permissions.VIEW_TASK), async (req, res, next) => {
     const {
-        projectId,
+        projectId
+    } = req.state;
+    const {
         id
     } = req.params;
+
     try {
         validateFields({
             id: {
@@ -113,7 +111,9 @@ router.put('/:id',
             ),
             async (req, res, next) => {
     const {
-        projectId,
+        projectId
+    } = req.state;
+    const {
         id
     } = req.params;
     const {
@@ -130,16 +130,11 @@ router.put('/:id',
             },
             code: {
                 value: code,
-                type: 'alpha',
-                length: 4
+                type: 'int'
             },
             project_id: {
                 value: projectId,
                 type: 'int'
-            },
-            description: {
-                value: description,
-                type: 'alpha'
             },
             status: {
                 value: status,
@@ -160,7 +155,9 @@ router.delete('/:id',
                 ),
                 async (req, res, next) => {
     const {
-        projectId,
+        projectId
+    } = req.state;
+    const {
         id
     } = req.params;
 

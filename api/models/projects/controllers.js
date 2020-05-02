@@ -1,12 +1,15 @@
 const express = require('express');
 
-const Security = require('../../security/Jwt/index.js');
 const ProjectsService = require('./services.js');
+const PermissionService = require('../permissions/services.js');
+const TaskService = require('../tasks/services.js');
+
 const {
     authorizePermissions
 } = require('../../security/authorize/index.js');
 const {
-    permissions
+    permissions,
+    permissionsList,
 } = require('../permissions/permissions.js');
 
 const {
@@ -29,7 +32,8 @@ router.post('/', async (req, res, next) => {
         };
         validateFields(fieldsToBeValidated);
 
-        await ProjectsService.add(name);
+        let rows = await ProjectsService.add(name);
+        await PermissionService.giveMultiplePermissionsToUserOnProject(permissionsList, req.state.decoded.userId, rows[0].id)
 
         res.status(201).end();
     } catch (err) {
@@ -114,6 +118,10 @@ router.delete('/:projectId',
                 type: 'int'
             }
         });
+
+        // delete references first
+        await PermissionService.deleteAllPermissionsByProject(parseInt(projectId));
+        await TaskService.deleteAllByProjectId(parseInt(projectId));
 
         await ProjectsService.deleteById(parseInt(projectId));
         res.status(204).end();

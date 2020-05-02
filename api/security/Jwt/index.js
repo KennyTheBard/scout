@@ -50,7 +50,8 @@ const authorizeAndExtractToken = async (req, res, next) => {
 
         const decoded = await verifyAndDecodeData(token);
         req.state = {
-            decoded
+            decoded,
+            ...req.state
         };
 
         next();

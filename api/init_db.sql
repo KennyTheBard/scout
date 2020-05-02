@@ -20,7 +20,7 @@ CREATE TABLE permissions_to_users (
   permission permission,
   user_id int,
   project_id int,
-  PRIMARY KEY (user_id, project_id)
+  PRIMARY KEY (user_id, project_id, permission)
 );
 
 CREATE TABLE projects (
