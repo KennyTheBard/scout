@@ -4,6 +4,9 @@ const ProjectsService = require('./services.js');
 const PermissionService = require('../permissions/services.js');
 const TaskService = require('../tasks/services.js');
 
+const {extractPathParam} = require('../../middleware/extract.js');
+
+
 const {
     authorizePermissions
 } = require('../../security/authorize/index.js');
@@ -70,6 +73,7 @@ router.get('/:projectId', authorizePermissions(permissions.VIEW_PROJECT), async 
 });
 
 router.put('/:projectId',
+            extractPathParam('projectId'), 
             authorizePermissions(
                 permissions.UPDATE_PROJECT_NAME,
                 permissions.UPDATE_PROJECT_CODE,
@@ -103,6 +107,7 @@ router.put('/:projectId',
 });
 
 router.delete('/:projectId',
+                extractPathParam('projectId'), 
                 authorizePermissions(
                     permissions.DELETE_PROJECT,
                 ),
