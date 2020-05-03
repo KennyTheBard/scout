@@ -6,25 +6,31 @@ import ProjectList from './browse/ProjectList';
 import ProjectForm from './project/ProjectForm';
 import ProjectDetails from './project/ProjectDetails';
 
+import "./App.scss";
+
 require('dotenv').config()
 
 function App() {
   // let mainPage = !!localStorage.getItem("token") ? <Authentication/> : <ProjectList/>; 
   
   return (
-    <>
-      <h1>Scout</h1>
-      <BrowserRouter basename="/">
-          {!!localStorage.getItem("token") && <Redirect to="/projects"/>}
+    <div className="page">
+      <div className="title">
+        <h1>Scout</h1>
+      </div>
+      <div className="content">
+        <BrowserRouter basename="/">
+            {!!localStorage.getItem("token") && <Redirect to="/projects"/>}
 
-          <Switch>
-              <Route exact path={"/"} component={Authentication} />
-              <Route exact path={"/projects"} component={ProjectList} />
-              <Route exact path={"/projects/new"} component={ProjectForm} />
-              <Route exact path={"/projects/:projectId/"} component={ProjectDetails} />
-          </Switch>
-      </BrowserRouter>
-    </>
+            <Switch>
+                <Route exact path={"/"} component={Authentication} />
+                <Route exact path={"/projects"} component={ProjectList} />
+                <Route exact path={"/projects/new"} component={ProjectForm} />
+                <Route exact path={"/projects/:projectId/"} component={ProjectDetails} />
+            </Switch>
+        </BrowserRouter>
+      </div>
+    </div>
   )
 }
 

@@ -3,6 +3,7 @@ import 'font-awesome/css/font-awesome.min.css';
 
 import ProjectItem from './ProjectItem.js';
 import {SERVER_URL} from '../config/configuration.js';
+import "../App.scss"
 
 const axios = require('axios');
 
@@ -42,9 +43,10 @@ class ProjectList extends React.Component {
             <div>
                 <h2>PROJECTS</h2>
 
-                <i onClick={this.addNewProject} className="fa fa-plus-square"></i>
+                <div className="btn btn-add">
+                    <i onClick={this.addNewProject} className="fa fa-plus-square fa-2x"></i>
+                </div>  
                 
-                {/* <button onClick={this.fetchProjects}>Refresh</button> */}
                 <table>
                     <thead>
                         <tr>

@@ -1,0 +1,103 @@
+
+.title {
+  background-color: #202020;
+  padding-top: 30px;
+  padding-bottom: 30px;
+
+  h1 {
+    max-width: 1px;
+    margin-left: 10%;
+    font-size: 3rem;
+    color: #e0e0e0;
+  }
+}
+
+.content {
+  padding-left: 20px;
+  padding-right: 20px;
+  max-width: 1000px;
+  margin: auto;
+}
+
+
+table {
+  width: 100%;
+  font-size: larger;
+}
+
+th {
+  text-align: center;
+}
+
+tr:hover{
+  background-color: #808080;
+  color: white;
+}
+
+td {
+  padding-top: 5px;
+  text-align: center;
+  vertical-align: middle;
+
+  i {
+    margin: 2px 5px 5px 5px;
+  }
+}
+
+.btn {    
+  float:right ;
+  position: relative;
+  top:-50px;
+  color: #202020;
+
+  &.btn-link {
+    top:0px;
+    right: -5px;
+    pointer-events:none;
+  }
+
+  &:hover {
+    color:#808080;
+  }
+}
+
+input {
+  float: right;
+  clear: both;
+
+  &[type=submit] {
+    float: none;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+}
+
+.tab {
+  overflow: hidden;
+  border: 1px solid #ccc;
+  background-color: #f1f1f1;
+}
+
+.tab a {
+  color:black;
+  text-decoration: none;
+  background-color: inherit;
+  float: left;
+  cursor: pointer;
+  padding: 14px 16px;
+  transition: 0.3s;
+
+  &:last-child {
+    float: right;
+    margin-left: 10px;
+  }
+}
+
+.tab a:hover {
+  background-color: #ddd;
+}
+
+.tab button.active {
+  background-color: #ccc;
+}

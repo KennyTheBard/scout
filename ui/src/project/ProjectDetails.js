@@ -8,7 +8,7 @@ import Settings from './Settings.js';
 import TaskDetails from '../task/TaskDetails.js';
 import TaskForm from '../task/TaskForm.js';
 
-
+import "../App.scss"
 
 const axios = require('axios');
 
@@ -45,15 +45,35 @@ class ProjectDetails extends React.Component {
                 <h2>{!!this.state.project && this.state.project.name}</h2>
 
                 <BrowserRouter basename={"/projects/" + this.state.projectId}>
-                    <Link to="/backlog">Backlog</Link>
-                    <Link to="/board">Board</Link> 
-                    <Link to="/settings">Settings</Link>
+                    <div className="tab">
+                        <Link to="/backlog">
+                            <strong>
+                                Backlog
+                            </strong>
+                        </Link>
+                        <Link to="/board">
+                            <strong>
+                                Board
+                            </strong>
+                        </Link> 
+                        <Link to="/settings">
+                            <strong>
+                                Settings
+                            </strong>
+                        </Link>
+                        <Link to={"/add-task"}>
+                            <div className="btn btn-add btn-link">
+                                <i className="fa fa-plus-square fa-lg"></i>
+                            </div>  
+                            <strong>
+                                New
+                            </strong>
+                        </Link>
+                    </div>
+                
                     <Redirect to="/board"/>
 
-                    <Link to={"/add-task"} className="btn btn-primary">
-                        <i className="fa fa-plus-square">
-                        </i>
-                    </Link>
+                    
 
                     <Switch>
                         <Route exact path={"/backlog"}>
