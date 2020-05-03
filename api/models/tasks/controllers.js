@@ -44,7 +44,7 @@ router.post('/', authorizePermissions(permissions.CREATE_TASK), async (req, res,
             },
             status: {
                 value: status,
-                type: 'alpha'
+                type: 'ascii'
             },
         });
 
@@ -138,7 +138,7 @@ router.put('/:id',
             },
             status: {
                 value: status,
-                type: 'alpha'
+                type: 'ascii'
             },
         });
 
