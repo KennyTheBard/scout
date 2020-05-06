@@ -1,14 +1,72 @@
 
-.title {
+header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
   background-color: #202020;
   padding-top: 30px;
   padding-bottom: 30px;
 
   h1 {
-    max-width: 1px;
-    margin-left: 10%;
     font-size: 3rem;
     color: #e0e0e0;
+
+    &.title {
+      margin-left: 10%;
+    }
+
+    &.user {
+      margin-right: 10%;
+    }
+  }
+
+}
+
+ /* Dropup Button */
+.dropbtn {
+  background-color: transparent;
+  color: #e0e0e0;
+  font-size: 3rem;
+  padding: 16px;
+  border: none;
+}
+
+/* The container <div> - needed to position the dropup content */
+.dropup {
+  position: relative;
+  display: inline-block;
+
+  &:hover {
+  /* Show the dropup menu on hover */
+    .dropup-content {
+      display: block;
+    }
+  }
+
+  /* Dropup content (Hidden by Default) */
+  .dropup-content {
+    display: none;
+    position: absolute;
+    font-size: 1.2rem;
+    bottom: -35px;
+    background-color: #101010;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+
+    /* Links inside the dropup */
+    a {
+      color: #e0e0e0;
+      text-align: end;
+      padding: 12px 16px;
+      text-decoration: none;
+      display: block;
+
+      /* Change color of dropup links on hover */
+      &:hover {
+        background-color: #606060
+      }
+    }
   }
 }
 
@@ -19,10 +77,11 @@
   margin: auto;
 }
 
-
 table {
   width: 100%;
   font-size: larger;
+  border-spacing: 0;
+  border-collapse: collapse;
 }
 
 th {
@@ -44,8 +103,54 @@ td {
   }
 }
 
-.btn {    
-  float:right ;
+.form-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
+
+fieldset {
+  max-width: 400px;
+
+  form {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    label {
+      margin: 10px;
+    }
+
+    input {
+      margin-left: 10px;
+      margin-bottom: 15px;
+      float: right;
+    }
+
+    select {
+      margin-left: 10px;
+      margin-bottom: 15px;
+      float: right;
+    }
+
+    input[type=submit] {
+      float: none;
+      border: transparent;
+      background-color: #13cf13;
+      padding: 5px 15px 5px 15px;
+      border-radius: 4px;
+      min-width: 30%;
+
+      &:hover {
+        background-color: #13ef13;
+      }
+
+    }
+  }
+}
+
+.btn-add {    
+  float:right;
   position: relative;
   top:-50px;
   color: #202020;
@@ -58,18 +163,6 @@ td {
 
   &:hover {
     color:#808080;
-  }
-}
-
-input {
-  float: right;
-  clear: both;
-
-  &[type=submit] {
-    float: none;
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
   }
 }
 

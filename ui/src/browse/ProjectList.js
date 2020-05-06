@@ -43,7 +43,7 @@ class ProjectList extends React.Component {
             <div>
                 <h2>PROJECTS</h2>
 
-                <div className="btn btn-add">
+                <div className="btn-add">
                     <i onClick={this.addNewProject} className="fa fa-plus-square fa-2x"></i>
                 </div>  
                 
@@ -57,7 +57,7 @@ class ProjectList extends React.Component {
                     </thead>
                     <tbody>
                         {this.state.data.map((d, idx) =>{
-                            return (<ProjectItem key={d.id} data={d}/>)
+                            return (<ProjectItem component={this} key={d.id} data={d}/>)
                         })}
                     </tbody>
                 </table>

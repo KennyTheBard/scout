@@ -1,5 +1,6 @@
 import React from 'react';
 import {SERVER_URL} from '../config/configuration.js';
+import { Link } from "react-router-dom";
 
 const axios = require('axios');
 
@@ -32,7 +33,7 @@ class Login extends React.Component {
         axios.post(SERVER_URL + '/users/login', userObject)
             .then((res) => {
                 localStorage.setItem("token", res.data);
-                window.location.reload();
+                this.props.history.push('/');
             }).catch((error) => {
                 console.log(error);
             });
@@ -44,19 +45,27 @@ class Login extends React.Component {
     }
 
     render() {
-        return (<form onSubmit={this.onSubmit}>
-            <div className="form-group">
-                <label>Username</label>
-                <input type="text" value={this.state.username} onChange={this.onChangeUsername} className="form-control" />
-            </div>
-            <div className="form-group">
-                <label>Password</label>
-                <input type="password" value={this.state.password} onChange={this.onChangePassword} className="form-control" />
-            </div>
-            <div className="form-group">
-                <input type="submit" value="Login" className="btn btn-success btn-block" />
-            </div>
-        </form>)
+        return (
+        <div className="form-container">
+            <fieldset>
+                <legend>Log in</legend>
+
+                <form onSubmit={this.onSubmit}>
+                    <div className="form-group">
+                        <label>Username</label>
+                        <input type="text" value={this.state.username} onChange={this.onChangeUsername} className="form-control" />
+                    </div>
+                    <div className="form-group">
+                        <label>Password</label>
+                        <input type="password" value={this.state.password} onChange={this.onChangePassword} className="form-control" />
+                    </div>
+                    <div className="form-group">
+                        <input type="submit" value="Login" className="btn btn-submit" />
+                    </div>
+                </form>
+                <Link to="/signin">No account?</Link>
+            </fieldset>
+        </div>)
     }
 }
 

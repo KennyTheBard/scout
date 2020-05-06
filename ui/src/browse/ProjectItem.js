@@ -20,7 +20,7 @@ function ProjectItem(props) {
 
         axios.delete(`${SERVER_URL}/projects/${props.data.id}`, config)
             .then((res) => {
-                window.location.reload();
+                props.component.fetchProjects();
             }).catch((error) => {
                 console.log(error);
             });

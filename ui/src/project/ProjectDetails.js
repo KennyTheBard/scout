@@ -62,7 +62,7 @@ class ProjectDetails extends React.Component {
                             </strong>
                         </Link>
                         <Link to={"/add-task"}>
-                            <div className="btn btn-add btn-link">
+                            <div className="btn-add btn-link">
                                 <i className="fa fa-plus-square fa-lg"></i>
                             </div>  
                             <strong>

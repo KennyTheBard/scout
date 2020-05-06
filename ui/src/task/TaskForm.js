@@ -11,8 +11,7 @@ class TaskForm extends React.Component {
         this.state = {
             projectId: props.projectId, 
             description: "",
-            status: "",
-            authors: {}
+            status: "TODO"
         };
     }
 
@@ -41,40 +40,58 @@ class TaskForm extends React.Component {
         this.setState({description: e.target.value});
     }
 
-    handleStatusChange = (e) => {
-        this.setState({status: e.target.value});
-    }
-
     handleCodeChange = (e) => {
         this.setState({code: e.target.value});
     }
 
-    render() {
-        return (
-            <>
-                <h2>CREATE NEW TASK</h2>
-                <form onSubmit={this.handleSubmit}>
-                    <label>Description</label>
-                    <input  type="text" id="description" name="description"
-                            value={this.state.description}
-                            onChange={this.handleDescriptionChange}/>
-                    <br/>
-                    
-                    <label>Code</label>
-                    <input  type="text" id="code" name="code"
-                            value={this.state.code}
-                            onChange={this.handleCodeChange}/>
-                    <br/>
+    handleStatusChange = (e) => {
+        console.log(e);
+        this.setState({status: e.target.value});
+    }
 
-                    <label>Status</label>
-                    <input  type="text" id="status" name="status"
-                            value={this.state.status}
-                            onChange={this.handleStatusChange}/>
-                    <br/>
-                    
-                    <input type="submit" value="Submit"/>
-                </form>
-            </>
+    render() {
+        const statuses = ['TODO',
+        'SELECTED FOR DEVELOPMENT',
+        'IN PROGRESS',
+        'READY FOR CODE REVIEW',
+        'READY FOR TESTING',
+        'DONE'];
+
+        return (
+            <div className="form-container">
+                <fieldset>
+                    <legend>CREATE NEW TASK</legend>
+                    <form onSubmit={this.handleSubmit}>
+                        <div className="form-group">
+                            <label>Description</label>
+                            <input  type="text" id="description" name="description"
+                                    value={this.state.description}
+                                    onChange={this.handleDescriptionChange}/>
+                        </div>
+                        
+                        <div className="form-group">
+                            <label>Code</label>
+                            <input  type="text" id="code" name="code"
+                                    value={this.state.code}
+                                    onChange={this.handleCodeChange}/>
+                        </div>
+                      
+                        <div className="form-group">
+                            <label>Status</label>
+                            <select id="status" name="status"
+                                onChange={this.handleStatusChange}>
+                                {statuses.map((d, idx) => {
+                                    return <option value={d}>{d}</option>
+                                })}
+                            </select>
+                        </div>
+                        
+                        <div className="form-group">
+                            <input type="submit" value="Submit"/>
+                        </div>
+                    </form>
+                </fieldset>
+            </div>
         )
     }
 }
