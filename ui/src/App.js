@@ -37,7 +37,6 @@ class App extends React.Component {
   
   logOut = () => {
     localStorage.removeItem("token");
-    this.state.history.push("/");
   }
 
   render() {
@@ -61,7 +60,7 @@ class App extends React.Component {
                 <div className="dropup">
                   <button className="dropbtn">{this.parseJwt(localStorage.getItem("token")).username}</button>
                   <div className="dropup-content">
-                    <a onClick={this.logOut()} href="#">Log out</a>
+                    <a onClick={this.logOut} href="#">Log out</a>
                   </div>
                 </div> 
               </>
