@@ -43,7 +43,7 @@ class App extends React.Component {
     
     let initialRedirect;
     if (!!localStorage.getItem("token")) {
-      initialRedirect = (<Redirect to="/projects"/>);
+      initialRedirect = (<Redirect to="/"/>);
     } else {
       initialRedirect = (<Redirect to="/login"/>);
     }
