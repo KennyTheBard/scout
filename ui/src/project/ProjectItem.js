@@ -22,7 +22,7 @@ function ProjectItem(props) {
             .then((res) => {
                 props.component.fetchProjects();
             }).catch((error) => {
-                console.log(error);
+                props.alert(error.response.data.error, "error");
             });
     }
 

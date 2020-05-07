@@ -9,6 +9,7 @@ import "./App.scss";
 import Login from './authentication/Login';
 import Signin from './authentication/Signin';
 import TaskDetails from './task/TaskDetails';
+import Alert from './alert/Alert';
 
 require('dotenv').config()
 
@@ -18,8 +19,24 @@ class App extends React.Component {
     super(props);
 
     this.state = {
-      loggedIn: !!localStorage.getItem("token")
+      loggedIn: !!localStorage.getItem("token"),
+      alerts: []
     }
+
+    this.addAlert = this.addAlert.bind(this);
+  }
+
+  addAlert(message, type) {
+    let alerts = this.state.alerts.concat({message, type});
+    this.setState({alerts: alerts});
+    setTimeout(
+        function() {
+            let alerts = [...this.state.alerts];
+            this.setState({alerts: alerts.slice(1)});
+        }
+        .bind(this),
+        3000
+    );
   }
 
   parseJwt = (token) => {
@@ -68,20 +85,40 @@ class App extends React.Component {
         </header>
         <div className="username">
           
+        {this.state.alerts.map((d, i) => {
+          return <Alert message={d.message} type={d.type}/>
+        })}
+
         </div>
         <div className="content">
           <BrowserRouter basename="/">
               {initialRedirect}
   
               <Switch>
-                  <Route exact path={"/"} component={ProjectList} />
-                  <Route exact path={"/login"}>
-                    <Login hook={this.logIn}/>
+                  <Route exact path={"/"}>
+                    <ProjectList alert={this.addAlert}/>
                   </Route>
-                  <Route exact path={"/signin"} component={Signin} />
-                  <Route exact path={"/projects/new"} component={ProjectForm} />
-                  <Route exact path={"/projects/:projectId/"} component={ProjectDetails} />
-                  <Route exact path={"/tasks/:taskId"} component={TaskDetails}/>
+                  <Route exact path={"/login"}>
+                    <Login hook={this.logIn} alert={this.addAlert}/>
+                  </Route>
+                  <Route exact path={"/signin"}>
+                    <Signin alert={this.addAlert}/>
+                  </Route>
+                  <Route exact path={"/projects/new"}>
+                    <ProjectForm alert={this.addAlert}/>
+                  </Route>
+                  <Route exact path={"/projects/:projectId/"} render={(matchProps) =>
+                    <ProjectDetails
+                      {...matchProps}
+                      alert={this.addAlert}/>
+                    }
+                  />
+                  <Route exact path={"/tasks/:taskId"} render={(matchProps) =>
+                    <TaskDetails
+                      {...matchProps}
+                      alert={this.addAlert}/>
+                    }
+                  />
               </Switch>
           </BrowserRouter>
         </div>

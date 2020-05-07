@@ -4,6 +4,7 @@ import {SERVER_URL} from '../config/configuration.js';
 import TaskItem from '../task/TaskItem.js';
 
 import "../App.scss"
+import UserSelect from '../user/UserSelect.js';
 
 const axios = require('axios');
 
@@ -12,9 +13,10 @@ class ProjectDetails extends React.Component {
     constructor(props) {
         super(props);
 
-        const params = this.props.match.params;
+        const params = props.match.params;
 
         this.state = {
+            alertHook: props.alert,
             pages: ['Board', 'Backlog', 'Settings', 'New task'],
             boardStatuses: ['SELECTED FOR DEVELOPMENT',
                 'IN PROGRESS',
@@ -26,8 +28,11 @@ class ProjectDetails extends React.Component {
             project: null,
             tasks: [],
             formTaskDescription: "",
-            formTaskStatus: "TODO"
+            formTaskStatus: "TODO",
+            settingsUser: null
         };
+
+        this.handleUserChange = this.handleUserChange.bind(this);
     }
 
     componentDidMount() {  
@@ -39,7 +44,7 @@ class ProjectDetails extends React.Component {
         .then((res) => {
             this.setState({project: res.data});
         }).catch((error) => {
-            console.log(error);
+            this.state.alertHook(error.response.data.error, "error");
         });
 
         this.fetchTasks();
@@ -54,7 +59,7 @@ class ProjectDetails extends React.Component {
         .then((res) => {
             this.setState({tasks: res.data});
         }).catch((error) => {
-            console.log(error);
+            this.state.alertHook(error.response.data.error, "error");
         });
     } 
 
@@ -95,10 +100,11 @@ class ProjectDetails extends React.Component {
             status: this.state.formTaskStatus
         }, config)
             .then((res) => {
+                this.state.alertHook("Un task nou a fost creeat cu succes!", "success");
                 this.setState({currentPage: 0});
                 this.fetchTasks();
             }).catch((error) => {
-                console.log(error);
+                this.state.alertHook(error.response.data.error, "error");
             });
         
     }
@@ -108,8 +114,11 @@ class ProjectDetails extends React.Component {
     }
 
     handleStatusChange = (e) => {
-        console.log(e);
         this.setState({formTaskStatus: e.target.value});
+    }
+
+    handleUserChange(e) {
+        this.setState({settingsUser: e.target.value});
     }
 
     render() {
@@ -167,6 +176,16 @@ class ProjectDetails extends React.Component {
                 }
 
                 {/* settings logic */}
+                {this.state.currentPage === 2 &&
+                    <div className="form-container">
+                        <fieldset>
+                            <legend>
+                                <label>User</label>
+                                <UserSelect alert={this.state.alertHook} handleChange={this.handleUserChange}/>
+                            </legend>
+                        </fieldset>
+                    </div>
+                }
 
                 {/* task form logic */}
                 {this.state.currentPage === 3 &&

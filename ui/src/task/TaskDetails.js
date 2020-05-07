@@ -13,6 +13,7 @@ class TaskDetails extends React.Component {
 
         this.state = {
             projectId: this.props.projectId,
+            alertHook: props.alert,
             taskId: params.taskId,
             task: null
         };
@@ -27,7 +28,7 @@ class TaskDetails extends React.Component {
         .then((res) => {
             this.setState({task: res.data[0]});
         }).catch((error) => {
-            console.log(error);
+            this.state.alertHook(error.response.data.error, "error");
         });
 
     }

@@ -12,6 +12,7 @@ class ProjectList extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            alertHook: props.alert,
             data: []
         };
     }
@@ -29,7 +30,7 @@ class ProjectList extends React.Component {
             .then((res) => {
                 this.setState({data: res.data});
             }).catch((error) => {
-                console.log(error);
+                this.state.alertHook(error.response.data.error, "error");
             });
         
     }
@@ -56,7 +57,7 @@ class ProjectList extends React.Component {
                     </thead>
                     <tbody>
                         {this.state.data.map((d, idx) =>{
-                            return (<ProjectItem component={this} key={d.id} data={d}/>)
+                            return (<ProjectItem alert={this.state.alertHook} component={this} key={d.id} data={d}/>)
                         })}
                     </tbody>
                 </table>

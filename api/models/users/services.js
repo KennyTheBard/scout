@@ -64,7 +64,7 @@ const authenticate = async (username, password) => {
 };
 
 const getAll = async () => {
-    const users = await query(`SELECT u.id, u.username, u.fullname FROM users u`);
+    const users = await query(`SELECT u.id, u.username, u.full_name FROM users u`);
 
     return users
 };

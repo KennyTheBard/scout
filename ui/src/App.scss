@@ -243,3 +243,27 @@ fieldset {
 .tab button.active {
   background-color: #ccc;
 }
+
+.alert {
+  font-size: 1.2rem;
+  border-radius: 2px;
+  margin: 10px 0px 10px 0px;
+  padding: 3px 0px 3px 0px;
+  text-align: center;
+  width: 80%;
+  margin-left:10%;
+  background-color: lightgray;
+  color: black;
+
+  &.error {
+    background-color: lightcoral;
+  }
+
+  &.warning {
+    background-color: lightsalmon;
+  }
+
+  &.success {
+    background-color: lightgreen;
+  }
+}

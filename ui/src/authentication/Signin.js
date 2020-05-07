@@ -10,6 +10,7 @@ class Signin extends React.Component {
 
         this.state = {
             history: props.history,
+            alertHook: props.alert,
             username: '',
             email: '',
             fullName: '',
@@ -42,7 +43,7 @@ class Signin extends React.Component {
         e.preventDefault();
 
         if (this.state.password !== this.state.repassword) {
-            console.log('Passwords differ!');
+            this.state.alertHook('Parolele difera!', "error");
             return;
         }
 
@@ -56,9 +57,10 @@ class Signin extends React.Component {
 
         axios.post(SERVER_URL + '/users/register', userObject)
             .then((res) => {
+                this.state.alertHook("Un link de activare va va fi trimis pe email in cel mai scurt timp.", "warning");
                 this.props.history.push('/login');
             }).catch((error) => {
-                console.log(error);
+                this.state.alertHook(error.response.data.error, "error");
             });
     }
 

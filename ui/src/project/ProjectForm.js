@@ -9,6 +9,7 @@ class ProjectForm extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            alertHook: props.alert,
             name: "",
             authors: {}
         };
@@ -25,10 +26,10 @@ class ProjectForm extends React.Component {
             name: this.state.name,
         }, config)
             .then((res) => {
-                // success notification
+                this.state.alertHook("Proiect creeat cu succes!", "success");
                 this.props.history.push("/");
             }).catch((error) => {
-                console.log(error);
+                this.state.alertHook(error.response.data.error, "error");
             });
         
     }
