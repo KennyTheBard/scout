@@ -70,6 +70,44 @@ header {
   }
 }
 
+nav {
+  ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #333;
+  }
+  
+  li {
+    float: left;
+
+    &:last-of-type {
+      float: right;
+    }
+  }
+  
+  li a {
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+
+    i {
+      padding-left: 10px;
+    }
+  }
+  
+  li a:hover {
+    background-color: #4CAF50;
+  }
+  
+  .active {
+    background-color: #111;
+  }
+}
+
 .content {
   padding-left: 20px;
   padding-right: 20px;
@@ -79,27 +117,38 @@ header {
 
 table {
   width: 100%;
-  font-size: larger;
-  border-spacing: 0;
-  border-collapse: collapse;
-}
+  table-layout: fixed;
 
-th {
-  text-align: center;
-}
+  &.projectList{
+    font-size: larger;
+    border-spacing: 0;
+    border-collapse: collapse;
 
-tr:hover{
-  background-color: #808080;
-  color: white;
-}
+    tr:hover{
+      background-color: #808080;
+      color: white;
+    }
+  }
 
-td {
-  padding-top: 5px;
-  text-align: center;
-  vertical-align: middle;
+  &:not(.projectList) {
+    td:hover {
+      background-color: #808080;
+      color: white;
+    }
+  }
 
-  i {
-    margin: 2px 5px 5px 5px;
+  th {
+    text-align: center;
+  }
+
+  td {
+    padding-top: 5px;
+    text-align: center;
+    vertical-align: middle;
+    
+    i {
+      margin: 2px 5px 5px 5px;
+    }
   }
 }
 

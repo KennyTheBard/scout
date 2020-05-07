@@ -11,6 +11,8 @@ class Signin extends React.Component {
         this.state = {
             history: props.history,
             username: '',
+            email: '',
+            fullName: '',
             password: '',
             repassword: ''
         };
@@ -18,6 +20,14 @@ class Signin extends React.Component {
 
     onChangeUsername = (e) => {
         this.setState({ username: e.target.value })
+    }
+
+    onChangeEmail = (e) => {
+        this.setState({ email: e.target.value })
+    }
+
+    onChangeFullName = (e) => {
+        this.setState({ fullName: e.target.value })
     }
 
     onChangePassword = (e) => {
@@ -31,8 +41,15 @@ class Signin extends React.Component {
     onSubmit = (e) => {
         e.preventDefault();
 
+        if (this.state.password !== this.state.repassword) {
+            console.log('Passwords differ!');
+            return;
+        }
+
         const userObject = {
             username: this.state.username,
+            email: this.state.email,
+            fullName: this.state.fullName,
             password: this.state.password,
             repassword: this.state.repassword
         };
@@ -43,12 +60,6 @@ class Signin extends React.Component {
             }).catch((error) => {
                 console.log(error);
             });
-
-        this.setState({
-            username: '',
-            password: '',
-            repassword: ''
-        });
     }
 
     render() {
@@ -61,6 +72,14 @@ class Signin extends React.Component {
                     <div className="form-group">
                         <label>Username</label>
                         <input type="text" value={this.state.username} onChange={this.onChangeUsername} className="form-control" />
+                    </div>
+                    <div className="form-group">
+                        <label>Email</label>
+                        <input type="text" value={this.state.email} onChange={this.onChangeEmail} className="form-control" />
+                    </div>
+                    <div className="form-group">
+                        <label>Fullname</label>
+                        <input type="text" value={this.state.fullName} onChange={this.onChangeFullName} className="form-control" />
                     </div>
                     <div className="form-group">
                         <label>Password</label>

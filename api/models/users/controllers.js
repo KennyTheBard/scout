@@ -10,6 +10,8 @@ const router = express.Router();
 router.post('/register', async (req, res, next) => {
     const {
         username,
+        email,
+        fullName,
         password
     } = req.body;
 
@@ -18,6 +20,14 @@ router.post('/register', async (req, res, next) => {
         const fieldsToBeValidated = {
             username: {
                 value: username,
+                type: 'username'
+            },
+            email: {
+                value: email,
+                type: 'email'
+            },
+            fullName: {
+                value: fullName,
                 type: 'alpha'
             },
             password: {
@@ -28,7 +38,7 @@ router.post('/register', async (req, res, next) => {
 
         validateFields(fieldsToBeValidated);
 
-        await UsersService.register(username, password);
+        await UsersService.register(username, email, fullName, password);
 
         res.status(201).end();
     } catch (err) {
@@ -60,6 +70,19 @@ router.post('/login', async (req, res, next) => {
         const token = await UsersService.authenticate(username, password);
 
         res.status(200).json(token);
+    } catch (err) {
+        // daca primesc eroare, pasez eroarea mai departe la handler-ul de errori declarat ca middleware in start.js 
+        next(err);
+    }
+
+})
+
+
+router.get('/all', async (req, res, next) => {
+    try {
+        const users = await UsersService.getAll();
+
+        res.status(200).json(users);
     } catch (err) {
         // daca primesc eroare, pasez eroarea mai departe la handler-ul de errori declarat ca middleware in start.js 
         next(err);

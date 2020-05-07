@@ -24,13 +24,23 @@ const validateFields = (fields) => {
         }
     
         switch (fieldType) {
+            case 'username':
+                if (!validator.isAlphanumeric(fieldValue.replace('_','').replace('.',''))) {
+                    throw new ServerError(`Campul ${fieldName} trebuie sa contina doar litere, cifre, punct si underscore`, 400);
+                }
+                break;
+            case 'email':
+                if (!validator.isEmail(fieldValue)) {
+                    throw new ServerError(`Campul ${fieldName} trebuie sa fie o adresa valida de email`, 400);
+                }
+                break;
             case 'ascii':
-                if (!validator.isAscii(fieldValue)) {
-                    throw new ServerError(`Campul ${fieldName} trebuie sa contina doar caractere ascii`, 400);
+                if (!validator.isAscii(fieldValue.replace(' ',''))) {
+                    throw new ServerError(`Campul ${fieldName} trebuie sa contina doar caractere ascii si spatii`, 400);
                 }
                 break;
             case 'alpha':
-                if (!validator.isAlpha(fieldValue)) {
+                if (!validator.isAlpha(fieldValue.replace(' ',''))) {
                     throw new ServerError(`Campul ${fieldName} trebuie sa contina doar litere`, 400);
                 }
                 break;

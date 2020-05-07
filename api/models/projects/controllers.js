@@ -30,7 +30,7 @@ router.post('/', async (req, res, next) => {
         const fieldsToBeValidated = {
             name: {
                 value: name,
-                type: 'alpha'
+                type: 'ascii'
             },
         };
         validateFields(fieldsToBeValidated);
@@ -75,8 +75,7 @@ router.get('/:projectId', authorizePermissions(permissions.VIEW_PROJECT), async 
 router.put('/:projectId',
             extractPathParam('projectId'), 
             authorizePermissions(
-                permissions.UPDATE_PROJECT_NAME,
-                permissions.UPDATE_PROJECT_CODE,
+                permissions.UPDATE_PROJECT,
             ),
             async (req, res, next) => {
     const {
@@ -94,7 +93,7 @@ router.put('/:projectId',
             },
             name: {
                 value: name,
-                type: 'alpha'
+                type: 'ascii'
             }
         };
         validateFields(fieldsToBeValidated);

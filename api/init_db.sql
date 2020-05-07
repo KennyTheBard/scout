@@ -1,19 +1,20 @@
 CREATE TABLE users (
   id SERIAL PRIMARY KEY,
   username varchar UNIQUE NOT NULL,
-  password varchar NOT NULL
+  email varchar UNIQUE NOT NULL,
+  full_name varchar NOT NULL,
+  password varchar NOT NULL,
+  activated boolean NOT NULL
 );
 
 CREATE TYPE permission AS ENUM
 ('VIEW_PROJECT', 'GRANT_VIEW_PROJECT',
-'UPDATE_PROJECT_NAME', 'GRANT_UPDATE_PROJECT_NAME',
-'UPDATE_PROJECT_CODE', 'GRANT_UPDATE_PROJECT_CODE',
+'UPDATE_PROJECT', 'GRANT_UPDATE_PROJECT',
 'DELETE_PROJECT', 'GRANT_DELETE_PROJECT',
 
 'CREATE_TASK', 'GRANT_CREATE_TASK',
 'VIEW_TASK', 'GRANT_VIEW_TASK',
-'UPDATE_TASK_DESCRIPTION', 'GRANT_UPDATE_TASK_DESCRIPTION',
-'UPDATE_TASK_STATUS', 'GRANT_UPDATE_TASK_STATUS',
+'UPDATE_TASK', 'GRANT_UPDATE_TASK',
 'DELETE_TASK', 'GRANT_DELETE_TASK');
 
 CREATE TABLE permissions_to_users (
@@ -25,8 +26,7 @@ CREATE TABLE permissions_to_users (
 
 CREATE TABLE projects (
   id SERIAL PRIMARY KEY,
-  name varchar UNIQUE NOT NULL,
-  code varchar[4]
+  name varchar UNIQUE NOT NULL
 );
 
 CREATE TYPE task_status AS ENUM
@@ -40,7 +40,6 @@ CREATE TYPE task_status AS ENUM
 CREATE TABLE tasks (
   id SERIAL PRIMARY KEY,
   project_id int,
-  code int NOT NULL,
   description varchar,
   status task_status
 );

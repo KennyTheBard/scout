@@ -29,7 +29,6 @@ function ProjectItem(props) {
     return (
         <tr>
             <td>{props.data.name}</td>
-            <td>{props.data.code}</td>
             <td>
                 <div>
                     <i onClick={goToDetails} className="fa fa-info-circle"/>

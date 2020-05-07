@@ -47,11 +47,10 @@ class ProjectList extends React.Component {
                     <i onClick={this.addNewProject} className="fa fa-plus-square fa-2x"></i>
                 </div>  
                 
-                <table>
+                <table className="projectList">
                     <thead>
                         <tr>
                             <th>Name</th>
-                            <th>Code</th>
                             <th>Actions</th>
                         </tr>
                     </thead>

@@ -27,20 +27,19 @@ router.post('/', authorizePermissions(permissions.CREATE_TASK), async (req, res,
         projectId
     } = req.state;
     const {
-        code,
         description,
         status
     } = req.body;
 
     try {
         validateFields({
-            code: {
-                value: code,
-                type: 'int'
-            },
             project_id: {
                 value: projectId,
                 type: 'int'
+            },
+            description: {
+                value: description,
+                type: 'ascii'
             },
             status: {
                 value: status,
@@ -50,7 +49,7 @@ router.post('/', authorizePermissions(permissions.CREATE_TASK), async (req, res,
 
         isValidStatus(status);
 
-        await TasksService.add(code, parseInt(projectId), description, status);
+        await TasksService.add(parseInt(projectId), description, status);
         res.status(201).end();
     } catch (err) {
         next(err);
@@ -117,7 +116,6 @@ router.put('/:id',
         id
     } = req.params;
     const {
-        code,
         description,
         status
     } = req.body;
@@ -128,21 +126,21 @@ router.put('/:id',
                 value: id,
                 type: 'int'
             },
-            code: {
-                value: code,
-                type: 'int'
-            },
             project_id: {
                 value: projectId,
                 type: 'int'
             },
+            description: {
+                value: description,
+                type: 'ascii'
+            },
             status: {
                 value: status,
-                type: 'ascii'
+                type: 'alpha'
             },
         });
 
-        await TasksService.updateById(parseInt(id), code, parseInt(projectId), description, status);
+        await TasksService.updateById(parseInt(id), parseInt(projectId), description, status);
         res.status(204).end();
     } catch (err) {
         next(err);

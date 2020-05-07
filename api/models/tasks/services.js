@@ -2,9 +2,9 @@ const {
     query
 } = require('../../data');
 
-const add = async (code, projectId, description, status) => {
-    await query('INSERT INTO tasks (code, project_id, description, status) ' +
-    'VALUES ($1, $2, $3, $4)', [code, projectId, description, status]);
+const add = async (projectId, description, status) => {
+    await query('INSERT INTO tasks (project_id, description, status) ' +
+    'VALUES ($1, $2, $3)', [projectId, description, status]);
 };
 
 const getAllForProject = async (projectId) => {
@@ -15,9 +15,9 @@ const getById = async (id, projectId) => {
     return await query('SELECT * FROM tasks WHERE id = $1 AND project_id = $2', [id, projectId]);
 };
 
-const updateById = async (id, code, projectId, description, status) => {
-    await query('UPDATE tasks SET code = $1, project_id = $2, description = $3, '+
-     'status = $4 WHERE id = $5', [code, projectId, description, status, id]);
+const updateById = async (id, projectId, description, status) => {
+    await query('UPDATE tasks SET project_id = $1, description = $2, '+
+     'status = $3 WHERE id = $4', [projectId, description, status, id]);
 };
 
 const deleteById = async (id, projectId) => {

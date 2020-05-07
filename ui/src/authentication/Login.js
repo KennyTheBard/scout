@@ -9,6 +9,7 @@ class Login extends React.Component {
         super(props);
 
         this.state = {
+            LoginHook: props.hook,
             username: '',
             password: ''
         };
@@ -33,15 +34,11 @@ class Login extends React.Component {
         axios.post(SERVER_URL + '/users/login', userObject)
             .then((res) => {
                 localStorage.setItem("token", res.data);
+                this.state.LoginHook();
                 this.props.history.push('/');
             }).catch((error) => {
                 console.log(error);
             });
-
-        this.setState({
-            username: '',
-            password: ''
-        });
     }
 
     render() {

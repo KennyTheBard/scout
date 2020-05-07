@@ -15,15 +15,29 @@ const {
     compare
 } = require('../../security/password');
 
-const register = async (username, password) => {
-    let cryptoPass = await hash(password);
+const register = async (username, email, fullName, password) => {
+    // check uniqueness by username
+    const usersByUsername = await query(`SELECT u.id, u.password FROM users u
+                                WHERE u.username = $1`, [username]);
+    if (usersByUsername.length !== 0) {
+        throw new ServerError('Exista deja un utilizator cu acest username inregistrat in sistem!', 400);
+    }
 
-    await query('INSERT INTO users (username, password) VALUES ($1, $2) RETURNING *', [username, cryptoPass]);
+    // check uniqueness by email
+    const usersByEmail = await query(`SELECT u.id, u.password FROM users u
+                                WHERE u.username = $1`, [email]);
+    if (usersByEmail.length !== 0) {
+        throw new ServerError('Exista deja un utilizator cu acest email inregistrat in sistem!', 400);
+    }
+
+    let cryptoPass = await hash(password);
+    await query('INSERT INTO users (username, email, full_name, password, activated) VALUES ($1, $2, $3, $4, TRUE)', [username, email, fullName, cryptoPass]);
 };
 
 const authenticate = async (username, password) => {
-    const users = await query(`SELECT u.id, u.password FROM users u
+    const users = await query(`SELECT u.id, u.password, u.activated FROM users u
                                 WHERE u.username = $1`, [username]);
+
     if (users.length === 0) {
         throw new ServerError(`Utilizatorul cu username ${username} nu exista in sistem!`, 400);
     }
@@ -35,6 +49,11 @@ const authenticate = async (username, password) => {
         throw new ServerError("Parola incorecta!", 403);
     }
 
+    // check if the account has been activated
+    if (!user.activated) {
+        throw new ServerError("Contul trebuie activat folosind linkul primit pe email inainte de a il folosi!", 400);
+    }
+
     // generate token payload
     let token = await generateToken({
         userId: user.id,
@@ -44,7 +63,14 @@ const authenticate = async (username, password) => {
     return token
 };
 
+const getAll = async () => {
+    const users = await query(`SELECT u.id, u.username, u.fullname FROM users u`);
+
+    return users
+};
+
 module.exports = {
     register,
-    authenticate
+    authenticate,
+    getAll
 }

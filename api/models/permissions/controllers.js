@@ -20,7 +20,6 @@ router.post('/:userId/:projectId',
             authorizePermissions(
                 permissions.GRANT_VIEW_PROJECT,
                 permissions.GRANT_UPDATE_PROJECT_NAME,
-                permissions.GRANT_UPDATE_PROJECT_CODE,
                 permissions.GRANT_DELETE_PROJECT,
                 permissions.GRANT_CREATE_TASK,
                 permissions.GRANT_VIEW_TASK,
