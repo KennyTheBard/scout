@@ -1,69 +1,52 @@
-header {
+.header-content {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+
   background-color: #202020;
   padding-top: 30px;
   padding-bottom: 30px;
 
-  h1 {
-    font-size: 3rem;
+  .title {
     color: #e0e0e0;
-
-    &.title {
-      margin-left: 10%;
-    }
-
-    &.user {
-      margin-right: 10%;
-    }
+    margin-left: 10%;
+    font-size: 3rem;
   }
 
-}
+  .user {
+    .user-container {
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-end;
 
- /* Dropup Button */
-.dropbtn {
-  background-color: transparent;
-  color: #e0e0e0;
-  font-size: 3rem;
-  padding: 16px;
-  border: none;
-}
+      .user {
+        border: transparent;
+        background-color: transparent;
+        color:#e0e0e0;
+        padding-right: 10px;
 
-/* The container <div> - needed to position the dropup content */
-.dropup {
-  position: relative;
-  display: inline-block;
+        &.username{
+          font-size: 1.5rem;
+        }
 
-  &:hover {
-  /* Show the dropup menu on hover */
-    .dropup-content {
-      display: block;
-    }
-  }
+        &.email{
+          float: right;
+          font-size: 1rem;
+        }
+      }
 
-  /* Dropup content (Hidden by Default) */
-  .dropup-content {
-    display: none;
-    position: absolute;
-    font-size: 1.2rem;
-    bottom: -35px;
-    background-color: #101010;
-    min-width: 160px;
-    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-    z-index: 1;
+      .icon {
+        color: #e0e0e0;
+        font-size: 2.5rem;
+      }
 
-    /* Links inside the dropup */
-    a {
-      color: #e0e0e0;
-      text-align: end;
-      padding: 12px 16px;
-      text-decoration: none;
-      display: block;
-
-      /* Change color of dropup links on hover */
-      &:hover {
-        background-color: #606060
+      a {
+        color: #e0e0e0;
+        text-decoration: none;
+        width: 150px;
+        font-size: 2rem;
+        text-align: center;
+        padding-top: 5px;
       }
     }
   }
@@ -92,6 +75,8 @@ nav {
     text-align: center;
     padding: 14px 16px;
     text-decoration: none;
+    font-size: 1.3rem;
+    font-weight: bold;
 
     i {
       padding-left: 10px;
@@ -308,4 +293,17 @@ fieldset {
 
 .form-container {
   margin-top: 35px;
+}
+
+.backlogItem {
+  padding-left: 20px;
+  padding-top: 20px;
+  padding-bottom: 20px;
+
+  font-size: 1.2rem;
+}
+
+.hoverable:hover {
+  background-color: #808080;
+  color: white;
 }

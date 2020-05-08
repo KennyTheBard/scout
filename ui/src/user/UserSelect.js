@@ -30,7 +30,7 @@ class UserSelect extends React.Component {
                 onChange={this.props.handleChange}>
                 <option disabled selected value> -- select an option -- </option>
                 {this.state.users.map((d, idx) => {
-                    return <option value={d.id}>{d.full_name} ({d.username})</option>
+                    return <option value={d.id}>{d.fullname} ({d.username})</option>
                 })}
             </select>
         )

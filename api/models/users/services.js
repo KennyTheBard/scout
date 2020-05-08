@@ -15,7 +15,7 @@ const {
     compare
 } = require('../../security/password');
 
-const register = async (username, email, fullName, password) => {
+const register = async (username, email, fullname, password) => {
     // check uniqueness by username
     const usersByUsername = await query(`SELECT u.id, u.password FROM users u
                                 WHERE u.username = $1`, [username]);
@@ -31,11 +31,11 @@ const register = async (username, email, fullName, password) => {
     }
 
     let cryptoPass = await hash(password);
-    await query('INSERT INTO users (username, email, full_name, password, activated) VALUES ($1, $2, $3, $4, TRUE)', [username, email, fullName, cryptoPass]);
+    await query('INSERT INTO users (username, email, fullname, password, activated) VALUES ($1, $2, $3, $4, TRUE)', [username, email, fullname, cryptoPass]);
 };
 
 const authenticate = async (username, password) => {
-    const users = await query(`SELECT u.id, u.password, u.activated FROM users u
+    const users = await query(`SELECT u.id, u.email, u.fullname, u.password, u.activated FROM users u
                                 WHERE u.username = $1`, [username]);
 
     if (users.length === 0) {
@@ -58,13 +58,15 @@ const authenticate = async (username, password) => {
     let token = await generateToken({
         userId: user.id,
         username: username,
+        email: user.email,
+        fullname: user.fullname,
     })
 
     return token
 };
 
 const getAll = async () => {
-    const users = await query(`SELECT u.id, u.username, u.full_name FROM users u`);
+    const users = await query(`SELECT u.id, u.username, u.fullname FROM users u`);
 
     return users
 };

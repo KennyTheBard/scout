@@ -13,7 +13,7 @@ class Signin extends React.Component {
             alertHook: props.alert,
             username: '',
             email: '',
-            fullName: '',
+            fullname: '',
             password: '',
             repassword: ''
         };
@@ -27,8 +27,8 @@ class Signin extends React.Component {
         this.setState({ email: e.target.value })
     }
 
-    onChangeFullName = (e) => {
-        this.setState({ fullName: e.target.value })
+    onChangeFullname = (e) => {
+        this.setState({ fullname: e.target.value })
     }
 
     onChangePassword = (e) => {
@@ -50,7 +50,7 @@ class Signin extends React.Component {
         const userObject = {
             username: this.state.username,
             email: this.state.email,
-            fullName: this.state.fullName,
+            fullname: this.state.fullname,
             password: this.state.password,
             repassword: this.state.repassword
         };
@@ -81,7 +81,7 @@ class Signin extends React.Component {
                     </div>
                     <div className="form-group">
                         <label>Fullname</label>
-                        <input type="text" value={this.state.fullName} onChange={this.onChangeFullName} className="form-control" />
+                        <input type="text" value={this.state.fullname} onChange={this.onChangeFullname} className="form-control" />
                     </div>
                     <div className="form-group">
                         <label>Password</label>

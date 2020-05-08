@@ -105,7 +105,8 @@ class TaskDetails extends React.Component {
             return <div>Loading...</div>
         }
 
-        let disabled = this.state.userPermissionsOnProject.indexOf('UPDATE_TASK') === -1;
+        let disableUpdate = this.state.userPermissionsOnProject.indexOf('UPDATE_TASK') === -1;
+        let disableDelete = this.state.userPermissionsOnProject.indexOf('DELETE_TASK') === -1;
 
         return (
             <div className="form-container">
@@ -117,14 +118,14 @@ class TaskDetails extends React.Component {
                                     onChange={this.onChangeDescription}
                                     className="form-control"
                                     defaultValue={this.state.task.description}
-                                    disabled={disabled}/>
+                                    disabled={disableUpdate}/>
                         </div>
 
                         <div className="form-group">
                             <label>Status</label>
                             <select id="status" name="status"
                                 onChange={this.onChangeStatus}
-                                disabled={disabled}>
+                                disabled={disableUpdate}>
                                 {STATUSES.map((d, idx) => {
                                     return (
                                         <option value={d}   
@@ -137,10 +138,13 @@ class TaskDetails extends React.Component {
                         </div>
 
                         <div className="form-group buttons">
-                            <button type="button" className="btn btn-cancel" onClick={() => {this.props.history.goBack();}}>
+                            <button type="button" className="btn btn-cancel"
+                                    onClick={() => {this.props.history.goBack();}}>
                                 <i className="fa fa-arrow-left"/>
                             </button>
-                            <button type="button" className="btn btn-delete" onClick={this.deleteTask}>
+                            <button type="button" className="btn btn-delete"
+                                    onClick={this.deleteTask}
+                                    disable={disableDelete}>
                                 <i className="fa fa-trash"/>
                             </button>
                             <input type="submit" value="Update" className="btn btn-submit" />

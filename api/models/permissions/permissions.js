@@ -5,11 +5,11 @@ const {
 
 const permissionsList = [
     'VIEW_PROJECT',
-    'UPDATE_PROJECT', 
+    'UPDATE_PROJECT', // not used yet
     'DELETE_PROJECT',
 
     'CREATE_TASK',
-    'VIEW_TASK',
+    'VIEW_TASK', 
     'UPDATE_TASK',
     'DELETE_TASK',
 

@@ -10,6 +10,7 @@ import Login from './authentication/Login';
 import Signin from './authentication/Signin';
 import TaskDetails from './task/TaskDetails';
 import Alert from './alert/Alert';
+import UserDisplay from './user/UserDisplay';
 import { parseJwt } from './jwt/parseJwt';
 
 require('dotenv').config()
@@ -61,21 +62,14 @@ class App extends React.Component {
     return (
       <div className="page">
         <header>
-          <h1 className="title">Scout</h1>
-          <h1 className="user">
-            {this.state.loggedIn && (
-              <>
-                <i className="fa fa-user-circle-o" aria-hidden="true"/>
-                <span style={{padding: '10px'}}/>
-                <div className="dropup">
-                  <button className="dropbtn">{parseJwt(localStorage.getItem("token")).username}</button>
-                  <div className="dropup-content">
-                    <a onClick={this.logOut} href="#">Log out</a>
-                  </div>
-                </div> 
-              </>
-            )}
-          </h1>
+          <div className="header-content">
+            <div className="title">Scout</div>
+            <div className="user">
+              {this.state.loggedIn &&
+                <UserDisplay logOut={this.logOut} user={parseJwt(localStorage.getItem("token"))}/>
+              }
+            </div>
+          </div>
         </header>
         <div className="username">
           

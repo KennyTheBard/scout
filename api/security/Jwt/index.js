@@ -8,15 +8,9 @@ const {
     validateFields
 } = require('../../utils');
 
-const options = {
-    issuer: process.env.JWT_ISSUER,
-    subject: process.env.JWT_SUBJECT,
-    audience: process.env.JWT_AUDIENCE
-};
-
 const generateToken = async (payload) => {
     try {
-        const signed = jwt.sign(payload, process.env.JWT_SECRET_KEY, options);
+        const signed = jwt.sign(payload, process.env.JWT_SECRET_KEY);
         return signed;
     } catch (err) {
         console.trace(err);
@@ -26,7 +20,7 @@ const generateToken = async (payload) => {
 
 const verifyAndDecodeData = async (token) => {
     try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY, options);
+        const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
         return decoded;
     } catch (err) {
         console.trace(err);

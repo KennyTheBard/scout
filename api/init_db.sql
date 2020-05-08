@@ -2,7 +2,7 @@ CREATE TABLE users (
   id SERIAL PRIMARY KEY,
   username varchar UNIQUE NOT NULL,
   email varchar UNIQUE NOT NULL,
-  full_name varchar NOT NULL,
+  fullname varchar NOT NULL,
   password varchar NOT NULL,
   activated boolean NOT NULL
 );

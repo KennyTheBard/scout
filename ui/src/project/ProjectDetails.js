@@ -90,7 +90,10 @@ class ProjectDetails extends React.Component {
             let line = [];
             for (let status of BOARD_STATUSES) {
                 let d = tasks[status][i];
-                line.push(<td>{!!d && <TaskItem key={d.id} data={d}/>}</td>)
+                line.push(<td>
+                        {!!d && <TaskItem key={d.id} data={d}
+                                userPermissionsOnProject={this.state.userPermissionsOnProject}/>}
+                    </td>)
             }
 
             body.push(<tr>{line}</tr>);
@@ -263,7 +266,8 @@ class ProjectDetails extends React.Component {
                             {this.state.tasks.filter((d, idx) => {
                                 return d.status === "TODO";
                             }).map((d, idx) =>{
-                                return (<TaskItem key={d.id} data={d}/>)
+                                return (<TaskItem key={d.id} data={d}
+                                        userPermissionsOnProject={this.state.userPermissionsOnProject}/>)
                             })}
                         </div>
                     </>

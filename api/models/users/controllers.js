@@ -11,7 +11,7 @@ router.post('/register', async (req, res, next) => {
     const {
         username,
         email,
-        fullName,
+        fullname,
         password
     } = req.body;
 
@@ -26,8 +26,8 @@ router.post('/register', async (req, res, next) => {
                 value: email,
                 type: 'email'
             },
-            fullName: {
-                value: fullName,
+            fullname: {
+                value: fullname,
                 type: 'alpha'
             },
             password: {
@@ -38,7 +38,7 @@ router.post('/register', async (req, res, next) => {
 
         validateFields(fieldsToBeValidated);
 
-        await UsersService.register(username, email, fullName, password);
+        await UsersService.register(username, email, fullname, password);
 
         res.status(201).end();
     } catch (err) {
