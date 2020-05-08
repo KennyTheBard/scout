@@ -2,7 +2,7 @@ import React from 'react';
 import 'font-awesome/css/font-awesome.min.css';
 
 import ProjectItem from './ProjectItem.js';
-import {SERVER_URL} from '../config/configuration.js';
+import {SERVER_URL} from '../static/config.js';
 import "../App.scss"
 
 const axios = require('axios');

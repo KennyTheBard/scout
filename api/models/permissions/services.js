@@ -19,6 +19,10 @@ const giveMultiplePermissionsToUserOnProject = async (permissions, userId, proje
     }
 };
 
+const deleteAllPermissionsByProjectAndUserId = async (userId, projectId) => {
+    await query('DELETE FROM permissions_to_users WHERE user_id = $1 AND project_id = $2', [userId, projectId]);
+};
+
 const deleteAllPermissionsByProject = async (projectId) => {
     await query('DELETE FROM permissions_to_users WHERE project_id = $1', [projectId]);
 };
@@ -27,5 +31,6 @@ module.exports = {
     givePermissionToUserOnProject,
     getPermissionsForUserOnProject,
     giveMultiplePermissionsToUserOnProject,
+    deleteAllPermissionsByProjectAndUserId,
     deleteAllPermissionsByProject
 }

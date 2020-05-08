@@ -1,10 +1,13 @@
 import React from 'react';
 
-import {SERVER_URL} from '../config/configuration.js';
+import {SERVER_URL} from '../static/config.js';
 import TaskItem from '../task/TaskItem.js';
 
 import "../App.scss"
 import UserSelect from '../user/UserSelect.js';
+import { parseJwt } from '../jwt/parseJwt';
+import { GRANTABLE_PERMISSIONS } from '../static/permission.js';
+import { BOARD_STATUSES } from '../static/status.js';
 
 const axios = require('axios');
 
@@ -17,28 +20,35 @@ class ProjectDetails extends React.Component {
 
         this.state = {
             alertHook: props.alert,
-            pages: ['Board', 'Backlog', 'Settings', 'New task'],
-            boardStatuses: ['SELECTED FOR DEVELOPMENT',
-                'IN PROGRESS',
-                'READY FOR CODE REVIEW',
-                'READY FOR TESTING',
-                'DONE'],
             currentPage: 0,
+            userId: parseJwt(localStorage.getItem("token")).userId,
             projectId: params.projectId,
+            userPermissionsOnProject: [],
             project: null,
             tasks: [],
             formTaskDescription: "",
             formTaskStatus: "TODO",
-            settingsUser: null
+            settingsUser: null,
+            settingsUserPermissions: [],
         };
 
-        this.handleUserChange = this.handleUserChange.bind(this);
+        this.handleSettingsUserChange = this.handleSettingsUserChange.bind(this);
+        this.togglePermission = this.togglePermission.bind(this);
     }
 
     componentDidMount() {  
         const config = {
             headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
         };
+
+        axios.get(SERVER_URL + `/permissions/${this.state.userId}/${this.state.projectId}`, config)
+        .then((res) => {
+            this.setState({userPermissionsOnProject: res.data.map((d, i) => {
+                return d.permission;
+            })});
+        }).catch((error) => {
+            this.state.alertHook(error.response.data.error, "error");
+        });
 
         axios.get(SERVER_URL + `/projects/${this.state.projectId}`, config)
         .then((res) => {
@@ -60,13 +70,14 @@ class ProjectDetails extends React.Component {
             this.setState({tasks: res.data});
         }).catch((error) => {
             this.state.alertHook(error.response.data.error, "error");
+            this.props.history.goBack();
         });
     } 
 
     getBoardBody() {
         let tasks = {}
         let height = 0
-        for (let status of this.state.boardStatuses) {
+        for (let status of BOARD_STATUSES) {
             tasks[status] = this.state.tasks.filter((d, idx) => {
                 return d.status === status;
             });
@@ -77,7 +88,7 @@ class ProjectDetails extends React.Component {
         let body = [];
         for (let i = 0; i < height; i++) {
             let line = [];
-            for (let status of this.state.boardStatuses) {
+            for (let status of BOARD_STATUSES) {
                 let d = tasks[status][i];
                 line.push(<td>{!!d && <TaskItem key={d.id} data={d}/>}</td>)
             }
@@ -86,6 +97,24 @@ class ProjectDetails extends React.Component {
         }
 
         return body;
+    }
+
+    grantPermissions = (e) => {
+        e.preventDefault();
+
+        const config = {
+            headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
+        };
+
+        axios.post(`${SERVER_URL}/permissions/${this.state.settingsUser}/${this.state.projectId}`, {
+            permissions: this.state.settingsUserPermissions
+        }, config)
+            .then((res) => {
+                this.state.alertHook("Permisiuni actualizate cu succes!", "success");
+            }).catch((error) => {
+                this.state.alertHook(error.response.data.error, "error");
+            });
+        
     }
 
     handleSubmit = (e) => {
@@ -117,8 +146,34 @@ class ProjectDetails extends React.Component {
         this.setState({formTaskStatus: e.target.value});
     }
 
-    handleUserChange(e) {
-        this.setState({settingsUser: e.target.value});
+    handleSettingsUserChange(e) {
+        const config = {
+            headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
+        };
+
+        axios.get(SERVER_URL + `/permissions/${e.target.value}/${this.state.projectId}`, config)
+        .then((res) => {
+            this.setState({settingsUserPermissions: res.data.map((d, i) => {
+                return d.permission;
+            })});
+        }).catch((error) => {
+            this.state.alertHook(error.response.data.error, "error");
+        });
+
+        this.setState({settingsUser: parseInt(e.target.value)});
+    }
+
+    togglePermission(e) {
+        let perms = this.state.settingsUserPermissions;
+        let currentPerm = e.target.value;
+
+        if (perms.indexOf(currentPerm) > -1) {
+            perms = perms.filter((d) => currentPerm !== d);
+        } else {
+            perms = perms.concat(currentPerm);
+        }
+
+        this.setState({settingsUserPermissions: perms});
     }
 
     render() {
@@ -128,21 +183,57 @@ class ProjectDetails extends React.Component {
 
                 <nav>
                     <ul>
+                        <li>
+                            <a  onClick={(e) => {
+                                    e.preventDefault();
+                                    this.setState({currentPage: 0});
+                                }}
+                                active={this.state.currentPage === 0}>
+                                Board
+                            </a>
+                        </li>
+                        <li>
+                            <a  onClick={(e) => {
+                                    e.preventDefault();
+                                    this.setState({currentPage: 1});
+                                }}
+                                active={this.state.currentPage === 1}>
+                                Backlog
+                            </a>
+                        </li>
+                        <li>
+                            <a  onClick={(e) => {
+                                    e.preventDefault();
 
-                        {this.state.pages.map((d, i) => {
-                            return (
-                                <li>
-                                    <a  onClick={(e) => {
-                                            e.preventDefault();
-                                            this.setState({currentPage: i});
-                                        }}
-                                        active={i === this.state.currentPage}>
-                                        {d}
-                                        {i + 1 === this.state.pages.length && <i className="fa fa-plus fa-lg"/>}
-                                    </a>
-                                </li>
-                            )
-                        })}
+                                    console.log(this.state.currentPage, 2, this.state.currentPage === 2)
+
+                                    if (this.state.userPermissionsOnProject.indexOf('GRANT_PERMISSION') === -1) {
+                                        this.state.alertHook('Nu aveti permisiunea de a acorda permisiuni!', 'error');
+                                        return;
+                                    }
+
+                                    this.setState({currentPage: 2});
+                                }}
+                                active={this.state.currentPage === 2}>
+                                Settings
+                            </a>
+                        </li>
+                        <li>
+                            <a  onClick={(e) => {
+                                    e.preventDefault();
+
+                                    if (this.state.userPermissionsOnProject.indexOf('CREATE_TASK') === -1) {
+                                        this.state.alertHook('Nu aveti permisiunea de a adauga taskuri noi!', 'error');
+                                        return;
+                                    }
+
+                                    this.setState({currentPage: 3});
+                                }}
+                                active={this.state.currentPage === 3}>
+                                New task
+                                <i className="fa fa-plus fa-lg"/>
+                            </a>
+                        </li>
                     </ul>
                 </nav>
 
@@ -152,7 +243,7 @@ class ProjectDetails extends React.Component {
                         <table>
                             <thead>
                                 <tr>
-                                    {this.state.boardStatuses.map((d, idx) => {
+                                    {BOARD_STATUSES.map((d, idx) => {
                                         return <th>{d}</th>
                                     })}
                                 </tr>
@@ -166,13 +257,16 @@ class ProjectDetails extends React.Component {
 
                 {/* backlog logic */}
                 {this.state.currentPage === 1 &&
-                    <div>
-                        {this.state.tasks.filter((d, idx) => {
-                            return d.status === "TODO";
-                        }).map((d, idx) =>{
-                            return (<TaskItem key={d.id} data={d}/>)
-                        })}
-                    </div>
+                    <>
+                        <h2>TODO</h2>
+                        <div>
+                            {this.state.tasks.filter((d, idx) => {
+                                return d.status === "TODO";
+                            }).map((d, idx) =>{
+                                return (<TaskItem key={d.id} data={d}/>)
+                            })}
+                        </div>
+                    </>
                 }
 
                 {/* settings logic */}
@@ -181,8 +275,28 @@ class ProjectDetails extends React.Component {
                         <fieldset>
                             <legend>
                                 <label>User</label>
-                                <UserSelect alert={this.state.alertHook} handleChange={this.handleUserChange}/>
+                                <UserSelect alert={this.state.alertHook} handleChange={this.handleSettingsUserChange}/>
                             </legend>
+                            <form onSubmit={this.grantPermissions}>
+                                {
+                                    GRANTABLE_PERMISSIONS.map((d, i) => {
+                                        return (
+                                            <div className="form-group">
+                                                <input  type="checkbox" id={d} value={d}
+                                                        checked={this.state.settingsUserPermissions.indexOf(d) > -1}
+                                                        onClick={this.togglePermission}
+                                                        disabled={this.state.settingsUser === this.state.userId}/>
+                                                <label>{d}</label>
+                                            </div>
+                                        )
+                                    })
+                                }
+                                
+                                <div className="form-group">
+                                    <input  type="submit" value="Grant" className="btn btn-submit"
+                                            disabled={this.state.settingsUser === this.state.userId}/>
+                                </div>
+                            </form>
                         </fieldset>
                     </div>
                 }
@@ -205,7 +319,7 @@ class ProjectDetails extends React.Component {
                                     <select id="status" name="status"
                                         onChange={this.handleStatusChange}>
                                         <option value="TODO">TODO</option>
-                                        {this.state.boardStatuses.map((d, idx) => {
+                                        {BOARD_STATUSES.map((d, idx) => {
                                             return <option value={d}>{d}</option>
                                         })}
                                     </select>

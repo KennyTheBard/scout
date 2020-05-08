@@ -53,7 +53,9 @@ router.get('/', async (req, res, next) => {
     }
 });
 
-router.get('/:projectId', authorizePermissions(permissions.VIEW_PROJECT), async (req, res, next) => {
+router.get('/:projectId',
+    extractPathParam('projectId'), 
+    authorizePermissions(permissions.VIEW_PROJECT), async (req, res, next) => {
     const {
         projectId
     } = req.params;

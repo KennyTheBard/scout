@@ -8,6 +8,7 @@ const {
     permissions,
     isValidPermission
 } = require('./permissions.js');
+const {extractPathParam} = require('../../middleware/extract.js');
 
 
 const {
@@ -17,15 +18,9 @@ const {
 const router = express.Router();
 
 router.post('/:userId/:projectId',
+            extractPathParam('projectId'), 
             authorizePermissions(
-                permissions.GRANT_VIEW_PROJECT,
-                permissions.GRANT_UPDATE_PROJECT_NAME,
-                permissions.GRANT_DELETE_PROJECT,
-                permissions.GRANT_CREATE_TASK,
-                permissions.GRANT_VIEW_TASK,
-                permissions.GRANT_DELETE_TASK,
-                permissions.GRANT_UPDATE_TASK_DESCRIPTION,
-                permissions.GRANT_UPDATE_TASK_STATUS,
+                permissions.GRANT_PERMISSION,
             ),
             async (req, res, next) => {
     const {
@@ -33,7 +28,7 @@ router.post('/:userId/:projectId',
         projectId
     } = req.params;
     const {
-        permission
+        permissions
     } = req.body;
 
     try {
@@ -48,11 +43,24 @@ router.post('/:userId/:projectId',
             }
         });
 
-        isValidPermission(permission);
+        // check if each permission is valid
+        for (let permission of permissions) {
+            isValidPermission(permission);
+        }
 
-        await PermissionsService.givePermissionToUserOnProject(
-            permission, parseInt(userId), parseInt(projectId)
+        // delete all permissins of said user on said project
+        await PermissionsService.deleteAllPermissionsByProjectAndUserId(
+            parseInt(userId),
+            parseInt(projectId)
         );
+
+        // give new permissions
+        for (let permission of permissions) {
+            await PermissionsService.givePermissionToUserOnProject(
+                permission, parseInt(userId), parseInt(projectId)
+            );
+        }
+       
         res.status(201).end();
     } catch (err) {
         next(err);

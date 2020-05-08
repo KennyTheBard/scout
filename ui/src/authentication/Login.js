@@ -1,5 +1,5 @@
 import React from 'react';
-import {SERVER_URL} from '../config/configuration.js';
+import {SERVER_URL} from '../static/config.js';
 import { Link } from "react-router-dom";
 
 const axios = require('axios');

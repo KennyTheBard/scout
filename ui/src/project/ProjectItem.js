@@ -1,7 +1,7 @@
 import React from 'react';
 import { useHistory } from "react-router-dom";
 
-import {SERVER_URL} from '../config/configuration.js';
+import {SERVER_URL} from '../static/config.js';
 
 const axios = require('axios');
 

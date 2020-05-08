@@ -10,6 +10,7 @@ import Login from './authentication/Login';
 import Signin from './authentication/Signin';
 import TaskDetails from './task/TaskDetails';
 import Alert from './alert/Alert';
+import { parseJwt } from './jwt/parseJwt';
 
 require('dotenv').config()
 
@@ -37,13 +38,6 @@ class App extends React.Component {
         .bind(this),
         3000
     );
-  }
-
-  parseJwt = (token) => {
-    if (!token) { return; }
-    const base64Url = token.split('.')[1];
-    const base64 = base64Url.replace('-', '+').replace('_', '/');
-    return JSON.parse(window.atob(base64));
   }
   
   logOut = () => {
@@ -74,7 +68,7 @@ class App extends React.Component {
                 <i className="fa fa-user-circle-o" aria-hidden="true"/>
                 <span style={{padding: '10px'}}/>
                 <div className="dropup">
-                  <button className="dropbtn">{this.parseJwt(localStorage.getItem("token")).username}</button>
+                  <button className="dropbtn">{parseJwt(localStorage.getItem("token")).username}</button>
                   <div className="dropup-content">
                     <a onClick={this.logOut} href="#">Log out</a>
                   </div>
@@ -95,25 +89,38 @@ class App extends React.Component {
               {initialRedirect}
   
               <Switch>
-                  <Route exact path={"/"}>
-                    <ProjectList alert={this.addAlert}/>
-                  </Route>
-                  <Route exact path={"/login"}>
-                    <Login hook={this.logIn} alert={this.addAlert}/>
-                  </Route>
-                  <Route exact path={"/signin"}>
-                    <Signin alert={this.addAlert}/>
-                  </Route>
-                  <Route exact path={"/projects/new"}>
-                    <ProjectForm alert={this.addAlert}/>
-                  </Route>
+                  <Route exact path={"/"} render={(matchProps) =>
+                    <ProjectList
+                      {...matchProps}
+                      alert={this.addAlert}/>
+                    }
+                  />
+                  <Route exact path={"/login"} render={(matchProps) =>
+                    <Login
+                      {...matchProps}
+                      hook={this.logIn}
+                      alert={this.addAlert}/>
+                    }
+                  />
+                  <Route exact path={"/signin"} render={(matchProps) =>
+                    <Signin
+                      {...matchProps}
+                      alert={this.addAlert}/>
+                    }
+                  />
+                  <Route exact path={"/projects/new"} render={(matchProps) =>
+                    <ProjectForm
+                      {...matchProps}
+                      alert={this.addAlert}/>
+                    }
+                  />
                   <Route exact path={"/projects/:projectId/"} render={(matchProps) =>
                     <ProjectDetails
                       {...matchProps}
                       alert={this.addAlert}/>
                     }
                   />
-                  <Route exact path={"/tasks/:taskId"} render={(matchProps) =>
+                  <Route exact path={"/projects/:projectId/tasks/:taskId"} render={(matchProps) =>
                     <TaskDetails
                       {...matchProps}
                       alert={this.addAlert}/>

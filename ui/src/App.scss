@@ -1,4 +1,3 @@
-
 header {
   display: flex;
   flex-direction: row;
@@ -182,11 +181,50 @@ fieldset {
       float: right;
     }
 
-    input[type=submit] {
-      float: none;
-      border: transparent;
-      background-color: #13cf13;
+  }
+}
+
+.form-group {
+  &.buttons {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    
+    button {
+      margin: 0px 0px 14px 0px;
       padding: 5px 15px 5px 15px;
+      border: transparent;
+      border-radius: 4px;
+      min-width: 30%;
+
+      &.btn-cancel {
+        background-color: #ca1111;
+        
+        &:hover {
+          background-color: #ef1313;
+        }
+      }
+
+      &.btn-delete {
+        background-color: #eaa911;
+        
+        &:hover {
+          background-color: #fab911;
+        }
+      }
+
+      i {
+        font-size: 1.2rem;
+        color: white;
+      }
+    }
+  
+    input[type=submit] {
+      float: right;
+      border: transparent;
+      background-color: #11ca11;
+      padding: 5px 15px 5px 15px;
+      margin-left: 0px;
       border-radius: 4px;
       min-width: 30%;
 
@@ -266,4 +304,8 @@ fieldset {
   &.success {
     background-color: lightgreen;
   }
+}
+
+.form-container {
+  margin-top: 35px;
 }

@@ -1,6 +1,6 @@
 import React from 'react';
 
-import {SERVER_URL} from '../config/configuration.js';
+import {SERVER_URL} from '../static/config.js';
 
 const axios = require('axios');
 

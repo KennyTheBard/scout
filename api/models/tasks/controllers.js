@@ -105,8 +105,7 @@ router.get('/:id', authorizePermissions(permissions.VIEW_TASK), async (req, res,
 
 router.put('/:id',
             authorizePermissions(
-                permissions.UPDATE_TASK_DESCRIPTION,
-                permissions.UPDATE_TASK_STATUS,
+                permissions.UPDATE_TASK
             ),
             async (req, res, next) => {
     const {
@@ -136,7 +135,7 @@ router.put('/:id',
             },
             status: {
                 value: status,
-                type: 'alpha'
+                type: 'ascii'
             },
         });
 

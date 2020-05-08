@@ -5,7 +5,7 @@ function TaskItem(props) {
     const history = useHistory();
 
     function handleClick() {
-        history.push("/tasks/" + props.data.id);
+        history.push(`${props.data.project_id}/tasks/${props.data.id}`);
     }
 
     return (

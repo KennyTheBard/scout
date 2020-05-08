@@ -1,6 +1,6 @@
 import React from 'react';
 
-import {SERVER_URL} from '../config/configuration.js';
+import {SERVER_URL} from '../static/config.js';
 
 const axios = require('axios');
 
@@ -28,8 +28,9 @@ class UserSelect extends React.Component {
         return (
             <select id="user" name="user"
                 onChange={this.props.handleChange}>
+                <option disabled selected value> -- select an option -- </option>
                 {this.state.users.map((d, idx) => {
-                    return <option value={d.id}>{d.full_name} ({d.usernam})</option>
+                    return <option value={d.id}>{d.full_name} ({d.username})</option>
                 })}
             </select>
         )

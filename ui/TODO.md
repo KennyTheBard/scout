@@ -1,16 +1,23 @@
 
 # TODO
+- [x] bug at granting permissions NaN 
+
+## Scored
+- [ ] Mail activation URL
+- [ ] Accept cookie
+- [ ] Mobile friendly
+- [ ] FAQ page
+- [ ] feedback form
 
 ## High priority
-- [ ] Create a permission grant page in settings
-- [ ] Add a "return" button to most of the pages
-- [ ] Add an alert manager
-- [ ] Fix problems with local storage on refresh
+- [x] Create a permission grant page in settings
+- [x] Add an alert manager
+- [x] Fix problems with local storage on refresh
 
 ## Medium priority
-- [ ] Fix navigation freezes
-- [ ] Disable options that use ungranted permissions
-- [ ] Fix user section in main page
+- [x] Fix navigation freezes
+- [x] Disable options that use ungranted permissions
+- [x] Fix user section in main page
 
 ## Low priority
 - [ ] Nicer style for lists
