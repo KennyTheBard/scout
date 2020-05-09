@@ -11,9 +11,16 @@ class Login extends React.Component {
         this.state = {
             LoginHook: props.hook,
             alertHook: props.alert,
+            history: props.history,
             username: '',
             password: ''
         };
+    }
+
+    componentDidMount() {
+        if (!!localStorage.getItem("token")) {
+            this.state.history.push("/")
+        }
     }
 
     onChangeUsername = (e) => {

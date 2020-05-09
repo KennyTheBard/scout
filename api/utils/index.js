@@ -14,9 +14,10 @@ const validateFields = (fields) => {
         const fieldValue = fields[fieldName].value + ''; // validator functioneaza doar pe strings
         const fieldType = fields[fieldName].type;
         const fieldLength = fields[fieldName].length;
+        const fieldRequired = fields[fieldName].required;
 
         if (!fieldValue) {
-            if (!!optional) {
+            if (!!fieldRequired) {
                 throw new ServerError(`Lipseste campul ${fieldName}`, 400);
             } else {
                 return;

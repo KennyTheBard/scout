@@ -94,7 +94,7 @@ class TaskDetails extends React.Component {
         axios.put(`${SERVER_URL}/${this.state.projectId}/tasks/${this.state.taskId}`, taskObject, config)
             .then((res) => {
                 this.state.alertHook("Taskul a fost actualizat cu succes!", "success");
-                this.fetchTask();
+                this.props.history.goBack();
             }).catch((error) => {
                 this.state.alertHook(error.response.data.error, "error");
             });
@@ -105,8 +105,8 @@ class TaskDetails extends React.Component {
             return <div>Loading...</div>
         }
 
-        let disableUpdate = this.state.userPermissionsOnProject.indexOf('UPDATE_TASK') === -1;
-        let disableDelete = this.state.userPermissionsOnProject.indexOf('DELETE_TASK') === -1;
+        let cannotUpdate = this.state.userPermissionsOnProject.indexOf('UPDATE_TASK') === -1;
+        let cannotDelete = this.state.userPermissionsOnProject.indexOf('DELETE_TASK') === -1;
 
         return (
             <div className="form-container">
@@ -118,17 +118,17 @@ class TaskDetails extends React.Component {
                                     onChange={this.onChangeDescription}
                                     className="form-control"
                                     defaultValue={this.state.task.description}
-                                    disabled={disableUpdate}/>
+                                    disabled={cannotUpdate}/>
                         </div>
 
                         <div className="form-group">
                             <label>Status</label>
                             <select id="status" name="status"
                                 onChange={this.onChangeStatus}
-                                disabled={disableUpdate}>
+                                disabled={cannotUpdate}>
                                 {STATUSES.map((d, idx) => {
                                     return (
-                                        <option value={d}   
+                                        <option key={d} defaultValue={d}   
                                                 selected={d === this.state.task.status}>
                                             {d}
                                         </option>
@@ -144,10 +144,10 @@ class TaskDetails extends React.Component {
                             </button>
                             <button type="button" className="btn btn-delete"
                                     onClick={this.deleteTask}
-                                    disable={disableDelete}>
+                                    hidden={cannotDelete}>
                                 <i className="fa fa-trash"/>
                             </button>
-                            <input type="submit" value="Update" className="btn btn-submit" />
+                            <input type="submit" value="Update" className="btn btn-submit" hidden={cannotUpdate}/>
                         </div>
                     </form>
                 </fieldset>

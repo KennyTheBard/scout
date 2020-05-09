@@ -18,14 +18,21 @@ const {
 } = require('../../utils');
 const {
     isValidStatus
-} = require('./status.js');
+} = require('../statuses/status.js');
 
 const router = express.Router();
 
-router.post('/', authorizePermissions(permissions.CREATE_TASK), async (req, res, next) => {
+router.post('/', authorizePermissions(
+        "Nu aveti permisiunea de a adauga un task nou pe acest proiect.",
+        permissions.CREATE_TASK
+    ), async (req, res, next) => {
     const {
-        projectId
+        projectId,
+        decoded
     } = req.state;
+    const {
+        userId
+    } = decoded;
     const {
         description,
         status
@@ -33,8 +40,12 @@ router.post('/', authorizePermissions(permissions.CREATE_TASK), async (req, res,
 
     try {
         validateFields({
-            project_id: {
+            projectId: {
                 value: projectId,
+                type: 'int'
+            },
+            userId: {
+                value: userId,
                 type: 'int'
             },
             description: {
@@ -49,14 +60,17 @@ router.post('/', authorizePermissions(permissions.CREATE_TASK), async (req, res,
 
         isValidStatus(status);
 
-        await TasksService.add(parseInt(projectId), description, status);
+        await TasksService.add(parseInt(projectId), description, status, parseInt(userId));
         res.status(201).end();
     } catch (err) {
         next(err);
     }
 });
 
-router.get('/', authorizePermissions(permissions.VIEW_PROJECT), async (req, res, next) => {
+router.get('/', authorizePermissions(
+        "Nu aveti permisiunea de a vedea detaliile acestui proiect.",
+        permissions.VIEW_PROJECT
+    ), async (req, res, next) => {
     const {
         projectId
     } = req.state;
@@ -76,7 +90,10 @@ router.get('/', authorizePermissions(permissions.VIEW_PROJECT), async (req, res,
     }
 });
 
-router.get('/:id', authorizePermissions(permissions.VIEW_TASK), async (req, res, next) => {
+router.get('/:id', authorizePermissions(
+        "Nu aveti permisiunea de a vizualiza detaliile unui task pe acest proiect.",
+        permissions.VIEW_TASK
+    ), async (req, res, next) => {
     const {
         projectId
     } = req.state;
@@ -105,12 +122,10 @@ router.get('/:id', authorizePermissions(permissions.VIEW_TASK), async (req, res,
 
 router.put('/:id',
             authorizePermissions(
+                "Nu aveti permisiunea de a actualiza taskuri pe acest proiect.",
                 permissions.UPDATE_TASK
             ),
             async (req, res, next) => {
-    const {
-        projectId
-    } = req.state;
     const {
         id
     } = req.params;
@@ -125,10 +140,6 @@ router.put('/:id',
                 value: id,
                 type: 'int'
             },
-            project_id: {
-                value: projectId,
-                type: 'int'
-            },
             description: {
                 value: description,
                 type: 'ascii'
@@ -139,7 +150,7 @@ router.put('/:id',
             },
         });
 
-        await TasksService.updateById(parseInt(id), parseInt(projectId), description, status);
+        await TasksService.updateById(parseInt(id), description, status);
         res.status(204).end();
     } catch (err) {
         next(err);
@@ -148,6 +159,7 @@ router.put('/:id',
 
 router.delete('/:id',
                 authorizePermissions(
+                    "Nu aveti permisiunea de a sterge un task de pe acest proiect.",
                     permissions.DELETE_TASK,
                 ),
                 async (req, res, next) => {

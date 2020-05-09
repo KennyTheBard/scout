@@ -8,6 +8,7 @@ import UserSelect from '../user/UserSelect.js';
 import { parseJwt } from '../jwt/parseJwt';
 import { GRANTABLE_PERMISSIONS } from '../static/permission.js';
 import { BOARD_STATUSES } from '../static/status.js';
+import PendingTaskItem from '../task/PendingTaskItem.js';
 
 const axios = require('axios');
 
@@ -26,6 +27,7 @@ class ProjectDetails extends React.Component {
             userPermissionsOnProject: [],
             project: null,
             tasks: [],
+            pendingTasks: [],
             formTaskDescription: "",
             formTaskStatus: "TODO",
             settingsUser: null,
@@ -34,6 +36,7 @@ class ProjectDetails extends React.Component {
 
         this.handleSettingsUserChange = this.handleSettingsUserChange.bind(this);
         this.togglePermission = this.togglePermission.bind(this);
+        this.fetchTasks =  this.fetchTasks.bind(this);
     }
 
     componentDidMount() {  
@@ -53,11 +56,12 @@ class ProjectDetails extends React.Component {
         axios.get(SERVER_URL + `/projects/${this.state.projectId}`, config)
         .then((res) => {
             this.setState({project: res.data});
+
+            this.fetchTasks();
         }).catch((error) => {
             this.state.alertHook(error.response.data.error, "error");
+            this.props.history.goBack();
         });
-
-        this.fetchTasks();
     }
 
     fetchTasks() {
@@ -70,7 +74,13 @@ class ProjectDetails extends React.Component {
             this.setState({tasks: res.data});
         }).catch((error) => {
             this.state.alertHook(error.response.data.error, "error");
-            this.props.history.goBack();
+        });
+
+        axios.get(SERVER_URL + `/${this.state.projectId}/pending-tasks`, config)
+        .then((res) => {
+            this.setState({pendingTasks: res.data});
+        }).catch((error) => {
+            this.state.alertHook(error.response.data.error, "error");
         });
     } 
 
@@ -90,13 +100,13 @@ class ProjectDetails extends React.Component {
             let line = [];
             for (let status of BOARD_STATUSES) {
                 let d = tasks[status][i];
-                line.push(<td>
-                        {!!d && <TaskItem key={d.id} data={d}
+                line.push(<td key={`${status}-${i}`}>
+                        {!!d && <TaskItem data={d}
                                 userPermissionsOnProject={this.state.userPermissionsOnProject}/>}
                     </td>)
             }
 
-            body.push(<tr>{line}</tr>);
+            body.push(<tr key={i}>{line}</tr>);
         }
 
         return body;
@@ -127,18 +137,35 @@ class ProjectDetails extends React.Component {
             headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
         };
 
-        axios.post(`${SERVER_URL}/${this.state.projectId}/tasks`, {
-            description: this.state.formTaskDescription,
-            status: this.state.formTaskStatus
-        }, config)
-            .then((res) => {
-                this.state.alertHook("Un task nou a fost creeat cu succes!", "success");
-                this.setState({currentPage: 0});
-                this.fetchTasks();
-            }).catch((error) => {
-                this.state.alertHook(error.response.data.error, "error");
-            });
-        
+        if (this.state.userPermissionsOnProject.indexOf('CREATE_TASK') > -1) {
+            axios.post(`${SERVER_URL}/${this.state.projectId}/tasks`, {
+                description: this.state.formTaskDescription,
+                status: this.state.formTaskStatus
+            }, config)
+                .then((res) => {
+                    this.state.alertHook("Un task nou a fost creeat cu succes!", "success");
+                    this.setState({formTaskDescription: ""});
+                    this.setState({formTaskStatus: "TODO"});
+                    this.setState({currentPage: 0});
+                    this.fetchTasks();
+                }).catch((error) => {
+                    this.state.alertHook(error.response.data.error, "error");
+                });
+        } else {
+            axios.post(`${SERVER_URL}/${this.state.projectId}/pending-tasks`, {
+                description: this.state.formTaskDescription,
+                status: this.state.formTaskStatus
+            }, config)
+                .then((res) => {
+                    this.state.alertHook("Un nou task a fost transmis spre a fi evaluat!", "success");
+                    this.setState({formTaskDescription: ""})
+                    this.setState({formTaskStatus: "TODO"})
+                    this.setState({currentPage: 0});
+                }).catch((error) => {
+                    this.state.alertHook(error.response.data.error, "error");
+                });
+        }
+    
     }
 
     handleDescriptionChange = (e) => {
@@ -191,48 +218,52 @@ class ProjectDetails extends React.Component {
                                     e.preventDefault();
                                     this.setState({currentPage: 0});
                                 }}
-                                active={this.state.currentPage === 0}>
+                                className={this.state.currentPage === 0 ? 'active' : ''}>
                                 Board
                             </a>
                         </li>
                         <li>
                             <a  onClick={(e) => {
                                     e.preventDefault();
+
                                     this.setState({currentPage: 1});
                                 }}
-                                active={this.state.currentPage === 1}>
+                                className={this.state.currentPage === 1 ? 'active' : ''}>
                                 Backlog
                             </a>
                         </li>
-                        <li>
+                        <li hidden={this.state.userPermissionsOnProject.indexOf('GRANT_PERMISSION') === -1 ? 1 : 0}>
                             <a  onClick={(e) => {
                                     e.preventDefault();
 
-                                    console.log(this.state.currentPage, 2, this.state.currentPage === 2)
-
-                                    if (this.state.userPermissionsOnProject.indexOf('GRANT_PERMISSION') === -1) {
-                                        this.state.alertHook('Nu aveti permisiunea de a acorda permisiuni!', 'error');
-                                        return;
-                                    }
-
                                     this.setState({currentPage: 2});
                                 }}
-                                active={this.state.currentPage === 2}>
+                                className={this.state.currentPage === 2 ? 'active' : ''}>
                                 Settings
                             </a>
+                        </li>
+                        <li style={{position: 'relative'}}
+                            hidden={this.state.userPermissionsOnProject.indexOf('CREATE_TASK') === -1 ? 1 : 0}>
+                            <a  onClick={(e) => {
+                                    e.preventDefault();
+
+                                    this.setState({currentPage: 3});
+                                }}
+                                className={this.state.currentPage === 3 ? 'active' : ''}>
+                                Pending
+                            </a>
+                            <div hidden={this.state.pendingTasks.length === 0 ? 1 : 0}
+                                className="pendingTaskNumber">
+                                {this.state.pendingTasks.length}
+                            </div>
                         </li>
                         <li>
                             <a  onClick={(e) => {
                                     e.preventDefault();
 
-                                    if (this.state.userPermissionsOnProject.indexOf('CREATE_TASK') === -1) {
-                                        this.state.alertHook('Nu aveti permisiunea de a adauga taskuri noi!', 'error');
-                                        return;
-                                    }
-
-                                    this.setState({currentPage: 3});
+                                    this.setState({currentPage: 4});
                                 }}
-                                active={this.state.currentPage === 3}>
+                                className={this.state.currentPage === 4 ? 'active' : ''}>
                                 New task
                                 <i className="fa fa-plus fa-lg"/>
                             </a>
@@ -243,11 +274,11 @@ class ProjectDetails extends React.Component {
                 {/* board logic */}
                 {this.state.currentPage === 0 &&
                     <div>
-                        <table>
+                        <table className="board">
                             <thead>
                                 <tr>
                                     {BOARD_STATUSES.map((d, idx) => {
-                                        return <th>{d}</th>
+                                        return <th key={d}>{d}</th>
                                     })}
                                 </tr>
                             </thead>
@@ -305,8 +336,26 @@ class ProjectDetails extends React.Component {
                     </div>
                 }
 
-                {/* task form logic */}
+                {/* pending logic */}
                 {this.state.currentPage === 3 &&
+                    <>
+                        <h2>Pending</h2>
+                        <div>
+                            {this.state.pendingTasks.map((d, idx) =>{
+                                return (
+                                    <PendingTaskItem    key={d.id} data={d}
+                                                        alertHook={this.state.alertHook}
+                                                        fetchTasksHook={this.fetchTasks}/>)
+                            })}
+                        </div>
+                        <div hidden={this.state.pendingTasks.length > 0}>
+                            No pending tasks right now
+                        </div>
+                    </>
+                }
+
+                {/* new task form logic */}
+                {this.state.currentPage === 4 &&
                     <div className="form-container">
                         <fieldset>
                             <legend>CREATE NEW TASK</legend>
@@ -331,6 +380,11 @@ class ProjectDetails extends React.Component {
                                 
                                 <div className="form-group">
                                     <input type="submit" value="Submit"/>
+                                </div>
+
+                                <div className="form-info"
+                                    hidden={this.state.userPermissionsOnProject.indexOf('CREATE_TASK') > -1 ? 1 : 0}>
+                                    <p>*Deoarece nu aveti permisiunea de a adauga taskuri noi,<br/>acest task va necesita comfirmarea cuiva cu aceasta permisiune</p>
                                 </div>
                             </form>
                         </fieldset>

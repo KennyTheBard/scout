@@ -7,6 +7,11 @@ CREATE TABLE users (
   activated boolean NOT NULL
 );
 
+CREATE TABLE projects (
+  id SERIAL PRIMARY KEY,
+  name varchar UNIQUE NOT NULL
+);
+
 CREATE TYPE permission AS ENUM
 ('VIEW_PROJECT',
 'UPDATE_PROJECT', 
@@ -26,10 +31,9 @@ CREATE TABLE permissions_to_users (
   PRIMARY KEY (user_id, project_id, permission)
 );
 
-CREATE TABLE projects (
-  id SERIAL PRIMARY KEY,
-  name varchar UNIQUE NOT NULL
-);
+ALTER TABLE permissions_to_users ADD FOREIGN KEY (user_id) REFERENCES users (id);
+
+ALTER TABLE permissions_to_users ADD FOREIGN KEY (project_id) REFERENCES projects (id);
 
 CREATE TYPE task_status AS ENUM
 ('TODO',
@@ -43,11 +47,22 @@ CREATE TABLE tasks (
   id SERIAL PRIMARY KEY,
   project_id int,
   description varchar,
-  status task_status
+  status task_status,
+  author_id int
 );
 
-ALTER TABLE permissions_to_users ADD FOREIGN KEY (user_id) REFERENCES users (id);
-
-ALTER TABLE permissions_to_users ADD FOREIGN KEY (project_id) REFERENCES projects (id);
-
 ALTER TABLE tasks ADD FOREIGN KEY (project_id) REFERENCES projects (id);
+
+ALTER TABLE tasks ADD FOREIGN KEY (author_id) REFERENCES users (id);
+
+CREATE TABLE pending_tasks (
+  id SERIAL PRIMARY KEY,
+  project_id int,
+  description varchar,
+  status task_status,
+  author_id int
+);
+
+ALTER TABLE pending_tasks ADD FOREIGN KEY (project_id) REFERENCES projects (id);
+
+ALTER TABLE pending_tasks ADD FOREIGN KEY (author_id) REFERENCES users (id);

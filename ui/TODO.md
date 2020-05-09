@@ -6,8 +6,8 @@
 - [ ] Mail activation URL
 - [ ] Accept cookie
 - [ ] Mobile friendly
-- [ ] FAQ page
-- [ ] feedback form
+- [x] FAQ page
+- [x] feedback form
 
 ## High priority
 - [x] Create a permission grant page in settings

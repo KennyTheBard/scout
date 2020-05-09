@@ -63,8 +63,8 @@ class App extends React.Component {
       <div className="page">
         <header>
           <div className="header-content">
-            <div className="title">Scout</div>
-            <div className="user">
+            <div className="header-title">Scout</div>
+            <div className="header-user">
               {this.state.loggedIn &&
                 <UserDisplay logOut={this.logOut} user={parseJwt(localStorage.getItem("token"))}/>
               }

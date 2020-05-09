@@ -3,6 +3,7 @@ const express = require('express');
 const ProjectsService = require('./services.js');
 const PermissionService = require('../permissions/services.js');
 const TaskService = require('../tasks/services.js');
+const PendingTaskService = require('../pending_tasks/services.js');
 
 const {extractPathParam} = require('../../middleware/extract.js');
 
@@ -55,7 +56,10 @@ router.get('/', async (req, res, next) => {
 
 router.get('/:projectId',
     extractPathParam('projectId'), 
-    authorizePermissions(permissions.VIEW_PROJECT), async (req, res, next) => {
+    authorizePermissions(
+        "Nu aveti permisiunea de a vizualiza acest proiect.",
+        permissions.VIEW_PROJECT
+    ), async (req, res, next) => {
     const {
         projectId
     } = req.params;
@@ -77,6 +81,7 @@ router.get('/:projectId',
 router.put('/:projectId',
             extractPathParam('projectId'), 
             authorizePermissions(
+                "Nu aveti permisiunea de a actualiza acest proiect.",
                 permissions.UPDATE_PROJECT,
             ),
             async (req, res, next) => {
@@ -110,6 +115,7 @@ router.put('/:projectId',
 router.delete('/:projectId',
                 extractPathParam('projectId'), 
                 authorizePermissions(
+                    "Nu aveti permisiunea de a sterge acest proiect.",
                     permissions.DELETE_PROJECT,
                 ),
                 async (req, res, next) => {
@@ -128,6 +134,7 @@ router.delete('/:projectId',
         // delete references first
         await PermissionService.deleteAllPermissionsByProject(parseInt(projectId));
         await TaskService.deleteAllByProjectId(parseInt(projectId));
+        await PendingTaskService.deleteAllByProjectId(parseInt(projectId));
 
         await ProjectsService.deleteById(parseInt(projectId));
         res.status(204).end();

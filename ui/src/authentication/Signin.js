@@ -19,6 +19,12 @@ class Signin extends React.Component {
         };
     }
 
+    componentDidMount() {
+        if (!!localStorage.getItem("token")) {
+            this.state.history.push("/")
+        }
+    }
+
     onChangeUsername = (e) => {
         this.setState({ username: e.target.value })
     }

@@ -14,7 +14,7 @@ function TaskItem(props) {
     }
 
     return (
-        <div onClick={handleClick} className="backlogItem hoverable">
+        <div onClick={handleClick} className="taskItem hoverable">
             {props.data.description}
         </div>
     )

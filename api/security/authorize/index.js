@@ -5,7 +5,7 @@ const {
 } = require('../../errors');
 
 
-const authorizePermissions = (...permissions) => {
+const authorizePermissions = (errorMessage, ...permissions) => {
     return async (req, res, next) => {
         const {
             projectId
@@ -19,13 +19,13 @@ const authorizePermissions = (...permissions) => {
             // check for any missing permission
             for (let perm of permissions) {
                 if (userPerms.filter((userPerm) => perm.is(userPerm['permission'])).length == 0) {
-                    next(new ServerError('Nu aveti permisiune sa executati aceasta actiune!', 401));
+                    next(new ServerError(errorMessage, 401));
                 }
             }
 
         // no jwt or corrupted
         } else {
-            next(new ServerError('Nu aveti permisiune sa executati aceasta actiune!', 401));
+            next(new ServerError(errorMessage, 401));
         }
 
         return next();

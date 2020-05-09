@@ -28,11 +28,21 @@ function ProjectItem(props) {
 
     return (
         <tr>
-            <td>{props.data.name}</td>
             <td>
-                <div>
-                    <i onClick={goToDetails} className="fa fa-info-circle"/>
-                    <i onClick={deleteProject} className="fa fa-trash"/>
+                <div className="projectName">
+                    {props.data.name}
+                </div>
+            </td>
+            <td>
+                <div className="form-group buttons actions">
+                    <button type="button" className="btn btn-details"
+                            onClick={goToDetails}>
+                        <i className="fa fa-info-circle"/>
+                    </button>
+                    <button type="button" className="btn btn-delete"
+                            onClick={deleteProject}>
+                        <i className="fa fa-trash"/>
+                    </button>
                 </div>
             </td>
         </tr>

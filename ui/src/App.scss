@@ -7,13 +7,15 @@
   padding-top: 30px;
   padding-bottom: 30px;
 
-  .title {
+  .header-title {
     color: #e0e0e0;
     margin-left: 10%;
     font-size: 3rem;
   }
 
-  .user {
+  .header-user {
+    margin-right: 10%;
+
     .user-container {
       display: flex;
       flex-direction: row;
@@ -31,7 +33,7 @@
 
         &.email{
           float: right;
-          font-size: 1rem;
+          font-size: 0.8rem;
         }
       }
 
@@ -50,6 +52,11 @@
       }
     }
   }
+}
+
+.projectName {
+  font-size: 1.5rem;
+  font-weight: bold;
 }
 
 nav {
@@ -81,14 +88,14 @@ nav {
     i {
       padding-left: 10px;
     }
-  }
-  
-  li a:hover {
-    background-color: #4CAF50;
-  }
-  
-  .active {
-    background-color: #111;
+
+    &:hover {
+      background-color: #4CAF50;
+    }
+
+    &.active {
+      background-color: #535353;
+    }
   }
 }
 
@@ -105,13 +112,7 @@ table {
 
   &.projectList{
     font-size: larger;
-    border-spacing: 0;
-    border-collapse: collapse;
-
-    tr:hover{
-      background-color: #808080;
-      color: white;
-    }
+    border-spacing: 0 10px;
   }
 
   &:not(.projectList) {
@@ -175,14 +176,24 @@ fieldset {
     flex-direction: row;
     justify-content: space-between;
     
-    button {
+    &.actions {
+      justify-content: center;
+
+      button {
+        min-width: 15%;
+        margin: 0px;
+
+      }
+    }
+
+    .btn {
       margin: 0px 0px 14px 0px;
       padding: 5px 15px 5px 15px;
       border: transparent;
       border-radius: 4px;
       min-width: 30%;
 
-      &.btn-cancel {
+      &.btn-delete {
         background-color: #ca1111;
         
         &:hover {
@@ -190,11 +201,27 @@ fieldset {
         }
       }
 
-      &.btn-delete {
+      &.btn-submit {
+        background-color: #11ca11;
+        
+        &:hover {
+          background-color: #13ef13;
+        }
+      }
+      
+      &.btn-cancel {
         background-color: #eaa911;
         
         &:hover {
           background-color: #fab911;
+        }
+      }
+
+      &.btn-details {
+        background-color: #1111da;
+        margin-inline: 10px;
+        &:hover {
+          background-color: #3131ff;
         }
       }
 
@@ -203,21 +230,27 @@ fieldset {
         color: white;
       }
     }
-  
-    input[type=submit] {
-      float: right;
-      border: transparent;
-      background-color: #11ca11;
-      padding: 5px 15px 5px 15px;
-      margin-left: 0px;
-      border-radius: 4px;
-      min-width: 30%;
+  }
 
-      &:hover {
-        background-color: #13ef13;
-      }
+  input[type=submit] {
+    float: right;
+    border: transparent;
+    background-color: #11ca11;
+    padding: 5px 15px 5px 15px;
+    margin-left: 0px;
+    border-radius: 4px;
+    min-width: 30%;
 
+    &:hover {
+      background-color: #13ef13;
     }
+  }
+}
+
+.form-info {
+  p {
+    font-size: 0.75rem;
+    color: #770000;
   }
 }
 
@@ -295,15 +328,55 @@ fieldset {
   margin-top: 35px;
 }
 
-.backlogItem {
+table.board {
+  empty-cells: hide;
+}
+
+.taskItem {
   padding-left: 20px;
   padding-top: 20px;
   padding-bottom: 20px;
+  padding-right: 20px;
 
   font-size: 1.2rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
 }
 
 .hoverable:hover {
   background-color: #808080;
   color: white;
+}
+
+.not-hoverable:hover:not(:empty) {
+  background-color: none;
+  color: none;
+}
+
+.pendingTaskNumber {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+
+  background-color: #ff4444;
+  color: white;
+  font-weight: bold;
+
+  padding: 0px 5px 1px 5px;
+  border-radius: 8px;
+}
+
+.wrapable {
+  word-wrap: break-word;
+}
+
+.breakable {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }

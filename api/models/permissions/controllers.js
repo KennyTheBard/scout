@@ -20,6 +20,7 @@ const router = express.Router();
 router.post('/:userId/:projectId',
             extractPathParam('projectId'), 
             authorizePermissions(
+                "Nu aveti permisiunea de a actualiza drepturi.",
                 permissions.GRANT_PERMISSION,
             ),
             async (req, res, next) => {
