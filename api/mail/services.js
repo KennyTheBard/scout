@@ -15,7 +15,7 @@ const transport = nodemailer.createTransport({
 const sendMail = (message) => {
     transport.sendMail(message, function (err, info) {
         if (err) {
-            next(new ServerError('Eroare la trimiterea mailului de activate!', 500));
+            throw new ServerError('Eroare la trimiterea mailului de activate!', 500);;
         } else {
             console.log(info);
             console.log(message.html);
