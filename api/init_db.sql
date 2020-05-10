@@ -4,7 +4,8 @@ CREATE TABLE users (
   email varchar UNIQUE NOT NULL,
   fullname varchar NOT NULL,
   password varchar NOT NULL,
-  activated boolean NOT NULL
+  activated boolean NOT NULL,
+  activation_code varchar NOT NULL
 );
 
 CREATE TABLE projects (

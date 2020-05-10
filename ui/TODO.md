@@ -4,7 +4,7 @@
 
 ## Scored
 - [ ] Mail activation URL
-- [ ] Accept cookie
+- [x] Accept cookie
 - [ ] Mobile friendly
 - [x] FAQ page
 - [x] feedback form

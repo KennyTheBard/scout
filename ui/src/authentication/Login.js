@@ -9,7 +9,7 @@ class Login extends React.Component {
         super(props);
 
         this.state = {
-            LoginHook: props.hook,
+            logInHook: props.logIn,
             alertHook: props.alert,
             history: props.history,
             username: '',
@@ -43,7 +43,7 @@ class Login extends React.Component {
             .then((res) => {
                 this.state.alertHook("V-ati autentificat cu succes!", "success");
                 localStorage.setItem("token", res.data);
-                this.state.LoginHook();
+                this.state.logInHook();
             }).catch((error) => {
                 this.state.alertHook(error.response.data.error, "error");
             });

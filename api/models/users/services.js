@@ -15,7 +15,7 @@ const {
     compare
 } = require('../../security/password');
 
-const register = async (username, email, fullname, password) => {
+const register = async (username, email, fullname, password, activationCode) => {
     // check uniqueness by username
     const usersByUsername = await query(`SELECT u.id, u.password FROM users u
                                 WHERE u.username = $1`, [username]);
@@ -25,13 +25,16 @@ const register = async (username, email, fullname, password) => {
 
     // check uniqueness by email
     const usersByEmail = await query(`SELECT u.id, u.password FROM users u
-                                WHERE u.username = $1`, [email]);
+                                WHERE u.email = $1`, [email]);
     if (usersByEmail.length !== 0) {
         throw new ServerError('Exista deja un utilizator cu acest email inregistrat in sistem!', 400);
     }
 
     let cryptoPass = await hash(password);
-    await query('INSERT INTO users (username, email, fullname, password, activated) VALUES ($1, $2, $3, $4, TRUE)', [username, email, fullname, cryptoPass]);
+    let ret = await query('INSERT INTO users (username, email, fullname, password, activated, activation_code) ' +
+        'VALUES ($1, $2, $3, $4, FALSE, $5) RETURNING *', [username, email, fullname, cryptoPass, activationCode]);
+
+    return ret[0].id;
 };
 
 const authenticate = async (username, password) => {
@@ -65,8 +68,20 @@ const authenticate = async (username, password) => {
     return token
 };
 
+const activate = async (id, activationCode) => {
+    let rows = await query(`UPDATE users SET activated = TRUE WHERE id = $1 AND activation_code = $2`, [id, activationCode]);
+
+    return rows
+};
+
 const getAll = async () => {
-    const users = await query(`SELECT u.id, u.username, u.fullname FROM users u`);
+    const users = await query(`SELECT id, username, fullname FROM users`);
+
+    return users
+};
+
+const getById = async (id) => {
+    const users = await query(`SELECT * FROM users WHERE id = $1`, [id]);
 
     return users
 };
@@ -74,5 +89,7 @@ const getAll = async () => {
 module.exports = {
     register,
     authenticate,
-    getAll
+    activate, 
+    getAll,
+    getById
 }

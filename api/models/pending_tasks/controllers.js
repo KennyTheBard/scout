@@ -3,6 +3,7 @@ const express = require('express');
 const Security = require('../../security/Jwt/index.js');
 const PendingTasksService = require('./services.js');
 const TasksService = require('../tasks/services.js');
+const UserService = require('../users/services.js');
 
 const {
     authorizePermissions
@@ -20,6 +21,9 @@ const {
 const {
     isValidStatus
 } = require('../statuses/status.js');
+const {
+    sendMail
+} = require('../../mail/services')
 
 const router = express.Router();
 
@@ -95,7 +99,8 @@ router.put('/:id',
             ),
             async (req, res, next) => {
     const {
-        projectId
+        projectId,
+        decoded
     } = req.state;
     const {
         id
@@ -114,8 +119,18 @@ router.put('/:id',
         });
 
         let task = (await PendingTasksService.getById(parseInt(id), parseInt(projectId)))[0];
+        let user = (await UserService.getById(parseInt(task.author_id)))[0]
         await TasksService.add(task.project_id, task.description, task.status, task.author_id)
         await PendingTasksService.deleteById(parseInt(id), parseInt(projectId));
+
+        const message = {
+            from: process.env.MAIL_USER,
+            to: user.email,
+            subject: 'Your task suggestion has been approved',
+            html: `<p>Your task sugestion (${task.description} - ${task.status}) has been approved by ${decoded.username}</p>`
+        };
+
+        sendMail(message);
 
         res.status(204).end();
     } catch (err) {

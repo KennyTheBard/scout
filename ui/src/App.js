@@ -1,5 +1,7 @@
 import React from 'react';
 import { Switch, Route, Redirect, BrowserRouter } from "react-router-dom"
+import Cookies from 'universal-cookie';
+import { confirmAlert } from 'react-confirm-alert';
 
 import ProjectList from './project/ProjectList';
 import ProjectForm from './project/ProjectForm';
@@ -13,7 +15,14 @@ import Alert from './alert/Alert';
 import UserDisplay from './user/UserDisplay';
 import { parseJwt } from './jwt/parseJwt';
 
+import { SERVER_URL } from './static/config.js';
+import Activation from './authentication/Activation';
+
+const axios = require('axios');
+
 require('dotenv').config()
+
+const cookies = new Cookies();
 
 class App extends React.Component {
   
@@ -26,6 +35,30 @@ class App extends React.Component {
     }
 
     this.addAlert = this.addAlert.bind(this);
+  }
+
+  componentDidMount() {
+    if (!cookies.get('ChocolateCookie')) {
+      confirmAlert({
+        title: "Cookie policy",
+        message: "Buna ziua! Acest website foloseste cookie-uri (nu, nu foloseste) pentru a imbunatatii experienta dumneavoastra. Acceptati, in conformitate cu GDPR, acest fapt?",
+        buttons: [
+          {
+            label: 'Da, sunt de acord',
+            onClick: () => cookies.set('ChocolateCookie', 'qwerty1234567890')
+          },
+          {
+            label: 'Nu, scoate-ma de aici',
+            onClick: () => window.location.replace("http://www.google.com")
+          }
+        ],
+      })
+      // if (window.confirm("Buna ziua! Acest website foloseste cookie-uri (nu, nu foloseste) pentru a imbunatatii experienta dumneavoastra. Acceptati, in conformitate cu GDPR, acest fapt?")) {
+      //   cookies.set('ChocolateCookie', 'qwerty1234567890');
+      // } else {
+      //   this.state.history.goBack();
+      // }
+    }
   }
 
   addAlert(message, type) {
@@ -92,7 +125,7 @@ class App extends React.Component {
                   <Route exact path={"/login"} render={(matchProps) =>
                     <Login
                       {...matchProps}
-                      hook={this.logIn}
+                      logIn={this.logIn}
                       alert={this.addAlert}/>
                     }
                   />
@@ -116,6 +149,12 @@ class App extends React.Component {
                   />
                   <Route exact path={"/projects/:projectId/tasks/:taskId"} render={(matchProps) =>
                     <TaskDetails
+                      {...matchProps}
+                      alert={this.addAlert}/>
+                    }
+                  />
+                  <Route exact path={"/activate/:userId/:code"} render={(matchProps) =>
+                    <Activation
                       {...matchProps}
                       alert={this.addAlert}/>
                     }
