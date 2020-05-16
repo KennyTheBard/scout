@@ -56,11 +56,15 @@ ALTER TABLE tasks ADD FOREIGN KEY (project_id) REFERENCES projects (id);
 
 ALTER TABLE tasks ADD FOREIGN KEY (author_id) REFERENCES users (id);
 
+CREATE TYPE pending_task_status AS ENUM
+('PENDING', 'ACCEPTED', 'DECLINED');
+
 CREATE TABLE pending_tasks (
   id SERIAL PRIMARY KEY,
   project_id int,
   description varchar,
   status task_status,
+  pending_status pending_task_status,
   author_id int
 );
 

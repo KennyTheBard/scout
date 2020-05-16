@@ -1,6 +1,5 @@
 const express = require('express');
 
-const Security = require('../../security/Jwt/index.js');
 const PendingTasksService = require('./services.js');
 const TasksService = require('../tasks/services.js');
 const UserService = require('../users/services.js');
@@ -11,16 +10,17 @@ const {
 const {
     permissions
 } = require('../permissions/permissions.js');
-const {
-    ServerError
-} = require('../../errors/index.js')
+
 
 const {
     validateFields
 } = require('../../utils');
 const {
     isValidStatus
-} = require('../statuses/status.js');
+} = require('../statuses/task_status.js');
+const {
+    pending_statuses
+} = require('../statuses/pending_status.js');
 const {
     sendMail
 } = require('../../mail/services')
@@ -85,14 +85,14 @@ router.get('/', authorizePermissions(
             },
         });
 
-        const tasks = await PendingTasksService.getAllForProject(parseInt(projectId));
+        const tasks = await PendingTasksService.getAllPendingForProject(parseInt(projectId));
         res.json(tasks);
     } catch (err) {
         next(err);
     }
 });
 
-router.put('/:id',
+router.put('/accept/:id',
             authorizePermissions(
                 "Nu aveti permisiunea de a accepta acest task.",
                 permissions.CREATE_TASK
@@ -121,13 +121,59 @@ router.put('/:id',
         let task = (await PendingTasksService.getById(parseInt(id), parseInt(projectId)))[0];
         let user = (await UserService.getById(parseInt(task.author_id)))[0]
         await TasksService.add(task.project_id, task.description, task.status, task.author_id)
-        await PendingTasksService.deleteById(parseInt(id), parseInt(projectId));
+        await PendingTasksService.setPendingStatusById(parseInt(id), parseInt(projectId), pending_statuses.ACCEPTED);
 
         const message = {
             from: process.env.MAIL_USER,
             to: user.email,
-            subject: 'Your task suggestion has been approved',
+            subject: 'Your task suggestion has been accepted',
             html: `<p>Your task sugestion (${task.description} - ${task.status}) has been approved by ${decoded.username}</p>`
+        };
+
+        sendMail(message);
+
+        res.status(204).end();
+    } catch (err) {
+        next(err);
+    }
+});
+
+router.put('/decline/:id',
+            authorizePermissions(
+                "Nu aveti permisiunea de a refuza acest task.",
+                permissions.CREATE_TASK
+            ),
+            async (req, res, next) => {
+    const {
+        projectId,
+        decoded
+    } = req.state;
+    const {
+        id
+    } = req.params;
+
+    try {
+        validateFields({
+            id: {
+                value: id,
+                type: 'int'
+            },
+            project_id: {
+                value: projectId,
+                type: 'int'
+            }
+        });
+
+        let task = (await PendingTasksService.getById(parseInt(id), parseInt(projectId)))[0];
+        let user = (await UserService.getById(parseInt(task.author_id)))[0]
+        await TasksService.add(task.project_id, task.description, task.status, task.author_id)
+        await PendingTasksService.setPendingStatusById(parseInt(id), parseInt(projectId), pending_statuses.DECLINED);
+
+        const message = {
+            from: process.env.MAIL_USER,
+            to: user.email,
+            subject: 'Your task suggestion has been declined',
+            html: `<p>Your task sugestion (${task.description} - ${task.status}) has been declined by ${decoded.username}</p>`
         };
 
         sendMail(message);

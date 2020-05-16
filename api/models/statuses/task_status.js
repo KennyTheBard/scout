@@ -1,6 +1,6 @@
 const Enum = require('enum')
 
-const statuses = new Enum(['TODO',
+const task_statuses = new Enum(['TODO',
         'SELECTED FOR DEVELOPMENT',
         'IN PROGRESS',
         'READY FOR CODE REVIEW',
@@ -9,12 +9,12 @@ const statuses = new Enum(['TODO',
     { freeze: true });
 
 const isValidStatus = (statusName) => {
-    if (!statuses.isDefined(statusName)) {
+    if (!task_statuses.isDefined(statusName)) {
         throw new ServerError('Numele statusului este invalid!', 400);
     }
 }
 
 module.exports = {
-    statuses,
+    task_statuses,
     isValidStatus
 };

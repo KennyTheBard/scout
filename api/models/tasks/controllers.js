@@ -1,6 +1,5 @@
 const express = require('express');
 
-const Security = require('../../security/Jwt/index.js');
 const TasksService = require('./services.js');
 
 const {
@@ -9,16 +8,13 @@ const {
 const {
     permissions
 } = require('../permissions/permissions.js');
-const {
-    ServerError
-} = require('../../errors/index.js')
 
 const {
     validateFields
 } = require('../../utils');
 const {
     isValidStatus
-} = require('../statuses/status.js');
+} = require('../statuses/task_status.js');
 
 const router = express.Router();
 

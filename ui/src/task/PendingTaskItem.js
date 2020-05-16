@@ -7,12 +7,12 @@ const axios = require('axios');
 
 function PendingTaskItem(props) {
 
-    function approvePendingTask(e) {
+    function acceptPendingTask(e) {
         const config = {
             headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
         };
 
-        axios.put(`${SERVER_URL}/${props.data.project_id}/pending-tasks/${props.data.id}`, {}, config)
+        axios.put(`${SERVER_URL}/${props.data.project_id}/pending-tasks/accept/${props.data.id}`, {}, config)
             .then((res) => {
                 props.alertHook("Taskul a fost aprobat cu succes!", "success");
                 props.fetchTasksHook();
@@ -21,22 +21,22 @@ function PendingTaskItem(props) {
             });
     }
 
-    // function denyPendingTask(e) {
-    //     const config = {
-    //         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
-    //     };
+    function denyPendingTask(e) {
+        const config = {
+            headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
+        };
         
-    //     axios.delete(`${SERVER_URL}/${this.state.projectId}/pending-tasks`, {
-    //         description: this.state.formTaskDescription,
-    //         status: this.state.formTaskStatus
-    //     }, config)
-    //         .then((res) => {
-    //             this.state.alertHook("Un nou task a fost transmis spre a fi evaluat!", "success");
-    //             this.setState({currentPage: 0});
-    //         }).catch((error) => {
-    //             this.state.alertHook(error.response.data.error, "error");
-    //         });
-    // }
+        axios.delete(`${SERVER_URL}/${this.state.projectId}/pending-tasks/decline/${props.data.id}`, {
+            description: this.state.formTaskDescription,
+            status: this.state.formTaskStatus
+        }, config)
+            .then((res) => {
+                this.state.alertHook("Taskul a fost refuzat cu succes!", "success");
+                this.setState({currentPage: 0});
+            }).catch((error) => {
+                this.state.alertHook(error.response.data.error, "error");
+            });
+    }
 
     return (
         <div className="taskItem">
@@ -47,17 +47,17 @@ function PendingTaskItem(props) {
                 {props.data.status}
             </div>
             <div>
-                {props.data.author_id}
+                {props.data.author} ({props.data.author_email})
             </div>
             <div className="form-group buttons actions">
                 <button type="button" className="btn btn-submit"
                         onClick={approvePendingTask}>
                     <i className="fa fa-check"/>
                 </button>
-                {/* <button type="button" className="btn btn-delete"
+                <button type="button" className="btn btn-delete"
                         onClick={denyPendingTask}>
                     <i className="fa fa-times"/>
-                </button> */}
+                </button>
             </div>
         </div>
     )
