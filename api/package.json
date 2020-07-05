@@ -1,5 +1,5 @@
 {
-  "name": "scout-api",
+  "name": "bugtrap-api",
   "version": "0.0.1",
   "description": "Back-end of web app for bug-tracking",
   "main": "start.js",
@@ -7,19 +7,11 @@
     "start-prod": "node start.js",
     "start": "nodemon -r dotenv/config start.js"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/KennyTheBard/scout.git"
-  },
   "keywords": [
     "bug-tracking"
   ],
   "author": "Octavian Teculescu",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/KennyTheBard/scout/issues"
-  },
-  "homepage": "https://github.com/KennyTheBard/scout#readme",
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",

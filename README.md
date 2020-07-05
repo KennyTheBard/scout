@@ -1,2 +1,2 @@
-# scout
+# Bugtrap
 Webapp for bug-tracking

@@ -51,7 +51,7 @@ function PendingTaskItem(props) {
             </div>
             <div className="form-group buttons actions">
                 <button type="button" className="btn btn-submit"
-                        onClick={approvePendingTask}>
+                        onClick={acceptPendingTask}>
                     <i className="fa fa-check"/>
                 </button>
                 <button type="button" className="btn btn-delete"

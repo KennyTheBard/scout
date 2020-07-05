@@ -53,7 +53,7 @@ router.post('/register', async (req, res, next) => {
         const message = {
             from: process.env.MAIL_USER,
             to: email,
-            subject: 'Activate your Scout account',
+            subject: 'Activate your BugTrap account',
             html: '<p>Click <a href="http://localhost:3001/activate/' + id + '/' + activationCode + '">here</a> to activate</p>'
         };
 
