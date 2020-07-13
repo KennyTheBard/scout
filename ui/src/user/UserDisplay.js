@@ -1,6 +1,6 @@
 import React from 'react';
 
-class UserSelect extends React.Component {
+class UserDisplay extends React.Component {
 
     constructor(props) {
         super(props);
@@ -31,4 +31,4 @@ class UserSelect extends React.Component {
     } 
 }
 
-export default UserSelect
+export default UserDisplay
